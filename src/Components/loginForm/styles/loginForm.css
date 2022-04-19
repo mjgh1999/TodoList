@@ -1,0 +1,31 @@
+.login-form {
+   padding: auto;
+
+    
+  }
+  .login-form-forgot {
+    
+    align-content: center;
+  }
+  .ant-col-rtl .login-form-forgot {
+    float: left;
+  }
+  .login-form-button {
+    width: 100%;
+  }
+
+  .full-center{
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    position: relative;
+    justify-content: center;
+  }
+
+  .back{
+    position: absolute;
+    border: 2px solid #1890ff;
+    border-radius: 3px;
+    padding: 50px;
+  }
+
