@@ -10,7 +10,7 @@ function LoginForm (){
 
   return (
     <>
-    <Row justify="space-around" align="middle">
+    <Row justify="space-around" align="middle" className='full-center'>
       <Col >
         <Form
           name="normal_login"

@@ -16,7 +16,7 @@
 
   .full-center{
     display: flex;
-    height: 100vh;
+    height: 90vh;
     align-items: center;
     position: relative;
     justify-content: center;
@@ -27,19 +27,4 @@
     border: 2px solid #1890ff;
     border-radius: 3px;
     padding: 50px;
-  }
-
-
-  .grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    grid-gap: 10px;
-    background-color: #c0d6e8;
-    padding: 10px;
-  }
-
-  .item1 {
-    grid-row-start: 1;
-    grid-row-end: 24;
-  
   }
