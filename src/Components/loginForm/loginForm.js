@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Row, Col ,Space } from 'antd';
+import { Form, Input, Button, Row, Col} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './styles/loginForm.css'
 

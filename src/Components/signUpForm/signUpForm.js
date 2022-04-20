@@ -1,27 +1,8 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button ,Row, Col} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import './styles/signUpForm.css'
 
-const formItemLayout = {
-    labelCol: {
-      xs: {
-        span: 24,
-      },
-      sm: {
-        span: 8,
-        
-      },
-    },
-    wrapperCol: {
-      xs: {
-        span: 12,
-      },
-      sm: {
-        span: 8,
-      },
-    },
-  };
   const tailFormItemLayout = {
     wrapperCol: {
       xs: {
@@ -43,17 +24,20 @@ function SignUpForm (){
   };
 
   return (
-    <div>
-        
-        <Form 
-        {...formItemLayout}
+    <>
+        <Row justify="space-around" align="middle">
+          <Col>
+            <Form 
+      
         form={form}
         name="register"
         onFinish={onFinish}
         scrollToFirstError
+        labelAlign = 'left'
+        labelCol={{ span: 10 }}
+        
 
         >
-
 
           <Form.Item
             name="username"
@@ -115,9 +99,10 @@ function SignUpForm (){
       </Form.Item>
 
 
-        </Form>
-        
-    </div>
+            </Form>
+          </Col>
+        </Row>
+    </>
   );
     }
 export default SignUpForm;
