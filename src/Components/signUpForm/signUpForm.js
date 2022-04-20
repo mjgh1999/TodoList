@@ -1,8 +1,14 @@
 import React from 'react';
-import { Form, Input, Button ,Row, Col} from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import './styles/signUpForm.css'
+import { Form,
+  Input,
+  Select,
+  Row,
+  Col,
+  Button,
+  } from 'antd';
 
+import './styles/signUpForm.css'
+const { Option } = Select;
   const tailFormItemLayout = {
     wrapperCol: {
       xs: {
@@ -16,6 +22,13 @@ import './styles/signUpForm.css'
     },
   };
 
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Option value="98">+98</Option>
+      </Select>
+    </Form.Item>
+  );
 
 function SignUpForm (){
     const [form] = Form.useForm();
@@ -50,6 +63,15 @@ function SignUpForm (){
             ]}
           >
             <Input/>
+          </Form.Item>
+
+
+          <Form.Item
+            name="phone"
+            label="Phone Number"
+            rules={[{ required: true, message: 'Please input your phone number!' }]}
+          >
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
           </Form.Item>
 
 
