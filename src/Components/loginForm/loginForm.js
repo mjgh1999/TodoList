@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Row, Col ,Space } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import './styles/loginForm.css'
 
@@ -9,8 +9,9 @@ function LoginForm (){
   };
 
   return (
-    <div className='full-center'>
-      <div className='back'>
+    <>
+    <Row justify="space-around" align="middle">
+      <Col >
         <Form
           name="normal_login"
           className="login-form"
@@ -58,8 +59,14 @@ function LoginForm (){
             Or <a href="">register now!</a>
           </Form.Item>
         </Form>
-      </div>
-    </div>
+      </Col>
+    </Row>
+    
+
+    
+
+
+    </>
   );
     }
 export default LoginForm;
