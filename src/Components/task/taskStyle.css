@@ -1,0 +1,41 @@
+.site-card-border-less-wrapper {
+    padding: 20px;
+    /*background: #ececec;*/
+    background: #2110ba;
+    height: 100px;
+  }
+
+  .task-text{
+    text-align: left;
+      width: 50%;
+      direction: ltr;
+  }
+  .task-box{
+    padding: 10px;
+    margin: 10px;
+    border: 1px;
+    border-radius: 2px;
+  }
+
+  .task-box:nth-child(odd){
+   background-color: #ececec;
+  }
+
+  .task-box:nth-child(even){
+    background-color: #ececec;
+   }
+
+   .done-btn{
+       background-color: #4CAF50;
+       color: white;
+   }
+
+   .delete-btn{
+    background-color: #f44336;
+    color: white;
+}
+
+.undone-btn{
+    background-color: #f4e136;
+    color: black;
+}
