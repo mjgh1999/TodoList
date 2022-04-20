@@ -24,9 +24,9 @@ function SignUpForm (){
   };
 
   return (
-    <>
-        <Row justify="space-around" align="middle">
-          <Col>
+    <>  
+        <Row justify="space-around" align="middle" className='full-center '>
+          <Col >
             <Form 
       
         form={form}
@@ -102,6 +102,7 @@ function SignUpForm (){
             </Form>
           </Col>
         </Row>
+      
     </>
   );
     }
