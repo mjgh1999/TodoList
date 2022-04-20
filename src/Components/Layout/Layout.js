@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout, Menu } from 'antd';
 import './style/LayoutStyle.css'
-
+import PageHeader from '../header/header.js';
 
 const { Header, Footer } = Layout;
 
@@ -18,7 +18,6 @@ class PageLayout extends Component {
            <Menu.Item>Login</Menu.Item>
           </Menu>
         </Header>
-        <Footer style={{ textAlign: 'center',paddingTop:'80%' }}>Todo App ©2022 Created by themjgh</Footer>
         </Layout>
       );
       
