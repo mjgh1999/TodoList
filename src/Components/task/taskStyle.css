@@ -39,3 +39,8 @@
     background-color: #f4e136;
     color: black;
 }
+
+.edit-btn{
+  background-color: rgb(34, 0, 255);
+  color: white;
+}
