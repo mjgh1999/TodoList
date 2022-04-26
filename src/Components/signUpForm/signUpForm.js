@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useState} from 'react';
+import Parse from 'parse/dist/parse.min.js';
 import { Form,
   Input,
   Select,
@@ -30,11 +31,18 @@ const { Option } = Select;
     </Form.Item>
   );
 
+
+
+
+/*
+
 function SignUpForm (){
-    const [form] = Form.useForm();
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
-  };
+
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [phoneNumber, setphoneNumber] = useState('');
+  
+    
 
   return (
     <>  
@@ -53,6 +61,7 @@ function SignUpForm (){
         >
 
           <Form.Item
+            onChange={(event) => setUsername(event.target.value)}
             name="username"
             label="Username"
             rules={[
@@ -90,6 +99,7 @@ function SignUpForm (){
           </Form.Item>
 
         <Form.Item
+        onChange={(event) => setPassword(event.target.value)}
         name="confirm"
         label="Confirm Password"
         dependencies={['password']}
@@ -115,7 +125,7 @@ function SignUpForm (){
 
 
         <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" onClick={() => doUserRegistration()}>
           Register
         </Button>
       </Form.Item>
@@ -128,4 +138,139 @@ function SignUpForm (){
     </>
   );
     }
+
+
 export default SignUpForm;
+*/
+
+function UserRegistration (){
+
+  const [form] = Form.useForm();
+  const onFinish = (values) => {
+      console.log('Received values of form: ', values);
+};
+
+  // State variables
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setphoneNumber] = useState('');
+
+  // Functions used by the screen components
+  const doUserRegistration = async function () {
+    // Note that these values come from state variables that we've declared before
+    const usernameValue = username;
+    const passwordValue = password;
+    const phoneValue = phoneNumber;
+    try {
+      // Since the signUp method returns a Promise, we need to call it using await
+      const createdUser = await Parse.User.signUp(usernameValue, passwordValue,{"phone":phoneValue});
+      alert(
+        `Success! User ${createdUser.getUsername()} was successfully created!`
+      );
+      return true;
+    } catch (error) {
+      // signUp can fail if any parameter is blank or failed an uniqueness check on the server
+      alert(`Error! ${error}`);
+      return false;
+    }
+  };
+
+  return (
+    <>  
+        <Row justify="space-around" align="middle" className='full-center '>
+          <Col >
+            <Form 
+      
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        scrollToFirstError
+        labelAlign = 'left'
+        labelCol={{ span: 10 }}
+        
+
+        >
+
+          <Form.Item
+            onChange={(event) => setUsername(event.target.value)}
+            name="username"
+            label="Username"
+            rules={[
+              {
+                required: true,
+                message: 'Please input your Username!',
+              },
+            ]}
+          >
+            <Input/>
+          </Form.Item>
+
+
+          <Form.Item
+          onChange={(event) => setphoneNumber(event.target.value)}
+            name="phone"
+            label="Phone Number"
+            rules={[{ required: true, message: 'Please input your phone number!' }]}
+          >
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+          </Form.Item>
+
+
+          <Form.Item
+        name="password"
+        label="Password"
+        rules={[
+          {
+            required: true,
+            message: 'Please input your password!',
+          },
+        ]}
+        hasFeedback
+      >
+        <Input.Password />
+          </Form.Item>
+
+        <Form.Item
+        onChange={(event) => setPassword(event.target.value)}
+        name="confirm"
+        label="Confirm Password"
+        dependencies={['password']}
+        hasFeedback
+        rules={[
+          {
+            required: true,
+            message: 'Please confirm your password!',
+          },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve();
+              }
+
+              return Promise.reject(new Error('The two passwords that you entered do not match!'));
+            },
+          }),
+        ]}
+      >
+        <Input.Password />
+        </Form.Item>
+
+
+        <Form.Item {...tailFormItemLayout}>
+        <Button type="primary" htmlType="submit" onClick={() => doUserRegistration()}>
+          Register
+        </Button>
+      </Form.Item>
+
+
+            </Form>
+          </Col>
+        </Row>
+      
+    </>
+  );
+
+
+};
+
+export default UserRegistration;
