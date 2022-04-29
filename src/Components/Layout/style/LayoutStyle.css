@@ -16,13 +16,34 @@
     padding: 24px;
     background: #fff;
   }
-  .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
+  
+  .login {
+    float: right;
+    width: 150px;
+    height: 50px;
+    margin: 7px 5px;
+    align-self: center;
+    padding-bottom: 10 px;
+    background-color: #4CAF50;
+       color: white;
   }
+
+  .logout {
+    float: right;
+    width: 150px;
+    height: 50px;
+    margin: 7px 5px;
+    align-self: center;
+    padding-bottom: 10 px;
+    background-color: #f44336;
+    color: white;
+  }
+
+  .status-text{
+    margin-bottom: 10px;
+    align:center;
+  }
+
   .ant-row-rtl .logo {
     float: right;
     margin: 16px 0 16px 24px;

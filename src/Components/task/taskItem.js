@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import { Card ,Row,Col,Button,Typography,Space,Input } from 'antd';
+import { Row,Col,Button,Typography,Space,Input } from 'antd';
 import '../task/taskStyle.css';
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -24,10 +24,13 @@ function TaskIteam (probs){
                         !editstatus
                            ?(
                             <Row justify="space-around" align="middle" className='task-box'>
-                                <Col xs={24} sm={24} md={14} lg={16} xl={12}>
-                                    <p className='task-text'>{probs.item.text}</p>
+                               <Col xs={24} sm={24} md={14} lg={16} xl={12}>
+                               {! probs.load 
+                                ? (<p className='task-text'>{probs.item.text}</p>)
+                                : (<p className='task-text'>Loading...</p>)
+                                }
                                 </Col>
-
+                            
                                 <Space align='center'>
                                     {
                                         ! probs.item.done  

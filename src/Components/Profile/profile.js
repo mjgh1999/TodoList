@@ -33,9 +33,10 @@ const { Option } = Select;
   );
 
 
-function UserRegistration (){
+function UserEditProfile (){
 
   const authcontext = useContext(AuthContext);
+
 
   const [form] = Form.useForm();
   const onFinish = (values) => {
@@ -43,33 +44,53 @@ function UserRegistration (){
 };
 
   // State variables
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setphoneNumber] = useState('');
+  const [username, setUsername] = useState(authcontext.username);
+  const [password, setPassword] = useState(authcontext.password);
+  const [phoneNumber, setphoneNumber] = useState(authcontext.phone);
+  const [editMode,SetEditMode] = useState(false);
+  const [disable,SetDisable] = useState(true);
 
-  // Functions used by the screen components
-  const doUserRegistration = async function () {
 
 
-    // Note that these values come from state variables that we've declared before
-    const usernameValue = username;
-    const passwordValue = password;
-    const phoneValue = phoneNumber;
+  let saveProfile = async function (){
+    // This will create your query
+    let parseQuery1 = new Parse.Query("User");
+    parseQuery1.equalTo('username', authcontext.username);
+    let parseQuery2 = new Parse.Query("User");
+    parseQuery2.equalTo('phone', authcontext.phone);
+    let query = new Parse.Query('User');
+    query._andQuery([parseQuery1, parseQuery2]);
+    // The query will resolve only after calling this method
     try {
-      // Since the signUp method returns a Promise, we need to call it using await
-      const createdUser = await Parse.User.signUp(usernameValue, passwordValue,{"phone":phoneValue});
-      alert(
-        `Success! User ${createdUser.getUsername()} was successfully created!`
-      );
-      // authenticated
-      authcontext.login();
+      let queryResult = await query.find();
+      let Person = queryResult[0];
+      Person.set('username', username);
+      Person.set('password', password);
+      Person.set('phone', phoneNumber);
+      Person.save();
+
+      authcontext.username = username;
+      authcontext.password = password;
+      authcontext.phone = phoneNumber;
+
+      SetEditMode(false);
+      SetDisable(true);
+
       return true;
     } catch (error) {
-      // signUp can fail if any parameter is blank or failed an uniqueness check on the server
-      alert(`Error! ${error}`);
+      // Error can be caused by lack of Internet connection
+      alert(`Error! ${error.message}`);
       return false;
     }
-  };
+    
+  }
+
+  let activeEdit = function(){
+      SetEditMode(true);
+      SetDisable(false);
+  }
+
+
 
   return (
     <>  
@@ -89,6 +110,8 @@ function UserRegistration (){
 
           <Form.Item
             onChange={(event) => setUsername(event.target.value)}
+            placeholder = {authcontext.username}
+            disabled={disable}
             name="username"
             label="Username"
             rules={[
@@ -104,6 +127,8 @@ function UserRegistration (){
 
           <Form.Item
           onChange={(event) => setphoneNumber(event.target.value)}
+          placeholder = {authcontext.phone}
+          disabled={disable}
             name="phone"
             label="Phone Number"
             rules={[{ required: true, message: 'Please input your phone number!' }]}
@@ -112,7 +137,9 @@ function UserRegistration (){
           </Form.Item>
 
 
-          <Form.Item
+        <Form.Item
+        disabled={disable}
+        placeholder = {authcontext.password}
         name="password"
         label="Password"
         rules={[
@@ -128,6 +155,7 @@ function UserRegistration (){
 
         <Form.Item
         onChange={(event) => setPassword(event.target.value)}
+        disabled={disable}
         name="confirm"
         label="Confirm Password"
         dependencies={['password']}
@@ -149,13 +177,22 @@ function UserRegistration (){
         ]}
       >
         <Input.Password />
+        
         </Form.Item>
-
-
         <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" onClick={() => doUserRegistration()}>
-          Register
-        </Button>
+            {
+                ! editMode
+                ?(
+                <Button type="primary" htmlType="submit" onClick={() => activeEdit()}>
+                    Edit
+                </Button>)
+                :(
+                <Button type="primary" htmlType="submit" onClick={() => saveProfile()}>
+                    Save
+                </Button>
+                )
+            }
+        
       </Form.Item>
 
 
@@ -169,4 +206,4 @@ function UserRegistration (){
 
 };
 
-export default UserRegistration;
+export default UserEditProfile;
