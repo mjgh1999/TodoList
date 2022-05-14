@@ -33,14 +33,23 @@ const PrivateRoute = ({ children, isAuthenticated }) => {
 
 function App() {
   
+  const currentUserpars = Parse.User.current();
   const[auth,Setauth] = useState(false)
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
-  const [correntUser, setCorrentUser] = useState(null);
+  const [correntUser, setCorrentUser] = useState(currentUserpars);
 
 
-  
+    
+
+  useEffect(()=>{
+    if(correntUser){
+      Setauth(true)
+    }
+  },[])
+
+
 
   return (
     <div className="App">
@@ -59,8 +68,8 @@ function App() {
           <Routes>
             <Route path='/login' element={<UserLogin />} />
             <Route path='/signup' element={<UserRegistration />} />
-            <Route path='/todos' element={<PrivateRoute isAuthenticated={auth} children={<TabView />} />} />
-            <Route path='/profile' element={<PrivateRoute isAuthenticated={auth} children={<UserEditProfile />} />} />
+            <Route path='/todos' element={<PrivateRoute isAuthenticated={currentUserpars} children={<TabView />} />} />
+            <Route path='/profile' element={<PrivateRoute isAuthenticated={currentUserpars} children={<UserEditProfile />} />} />
           </Routes>
 
         </Router>
