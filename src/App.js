@@ -32,8 +32,8 @@ const PrivateRoute = ({ children, isAuthenticated }) => {
 
 
 function App() {
-
-  const [auth, Setauth] = useState(false)
+  
+  const[auth,Setauth] = useState(false)
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
@@ -80,7 +80,7 @@ function App() {
         </Router>
 
       </AuthContext.Provider>
-
+      
     </div>
   );
 }
