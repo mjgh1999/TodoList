@@ -40,21 +40,7 @@ function App() {
   const [correntUser, setCorrentUser] = useState(null);
 
 
-  // const getCurrentUser = async function () {
-  //   try{
-  //     const currentUser = await Parse.User.current();
-  //     // Update state variable holding current user
-  //     setCorrentUser(currentUser);
-  //   }
-  //   catch(error){
-  //     setCorrentUser(null);
-  //   }
-    
-    
-  // };
-
-
-  // useEffect(()=>{getCurrentUser();},[])
+  
 
   return (
     <div className="App">

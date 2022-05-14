@@ -64,6 +64,10 @@ function UserRegistration (){
       authcontext.login();
       const currentUser = await Parse.User.current();
       authcontext.currentUser = currentUser;
+      authcontext.username = usernameValue;
+      authcontext.password = passwordValue;
+      authcontext.phone = phoneValue;
+      authcontext.authenticated =true;
       setSignupDown(true);
       return true;
     } catch (error) {

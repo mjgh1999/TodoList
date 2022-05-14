@@ -37,7 +37,6 @@ function UserLogin  (){
       
       // To verify that this is in fact the current user, `current` can be used
       const currentUser = await Parse.User.current();
-      console.log(loggedInUser === currentUser);
       // Clear input fields
       setUsername('');
       setPassword('');
@@ -45,8 +44,10 @@ function UserLogin  (){
       getCurrentUser();
       // authenticated
       authcontext.login();
+      authcontext.authenticated =true;
       authcontext.username = usernameValue
       authcontext.password = passwordValue
+      authcontext.currentUser = currentUser
       return true;
     } catch (error) {
       // Error can be caused by wrong parameters or lack of Internet connection
