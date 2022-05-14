@@ -1,7 +1,6 @@
 import React,{useState} from 'react';
 import { Row,Col,Button,Typography,Space,Input } from 'antd';
 import '../task/taskStyle.css';
-const { Title, Paragraph, Text, Link } = Typography;
 
 
 
@@ -25,10 +24,10 @@ function TaskIteam (probs){
                            ?(
                             <Row justify="space-around" align="middle" className='task-box'>
                                <Col xs={24} sm={24} md={14} lg={16} xl={12}>
-                               {! probs.load 
-                                ? (<p className='task-text'>{probs.item.text}</p>)
-                                : (<p className='task-text'>Loading...</p>)
-                                }
+                               
+                                <p className='task-text'>{probs.item.text}</p>
+                        
+                                
                                 </Col>
                             
                                 <Space align='center'>

@@ -1,4 +1,5 @@
 import React,{useState,useContext} from 'react';
+import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form,
   Input,
@@ -46,6 +47,7 @@ function UserRegistration (){
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
+  const [signUpDown,setSignupDown] = useState(false);
 
   // Functions used by the screen components
   const doUserRegistration = async function () {
@@ -58,11 +60,11 @@ function UserRegistration (){
     try {
       // Since the signUp method returns a Promise, we need to call it using await
       const createdUser = await Parse.User.signUp(usernameValue, passwordValue,{"phone":phoneValue});
-      alert(
-        `Success! User ${createdUser.getUsername()} was successfully created!`
-      );
       // authenticated
       authcontext.login();
+      const currentUser = await Parse.User.current();
+      authcontext.currentUser = currentUser;
+      setSignupDown(true);
       return true;
     } catch (error) {
       // signUp can fail if any parameter is blank or failed an uniqueness check on the server
@@ -72,7 +74,11 @@ function UserRegistration (){
   };
 
   return (
+    
+  
     <>  
+    {!signUpDown
+     ?(<>
         <Row justify="space-around" align="middle" className='full-center '>
           <Col >
             <Form 
@@ -162,8 +168,16 @@ function UserRegistration (){
             </Form>
           </Col>
         </Row>
+     </>)
+     :(<><Navigate to="/todos"/></>)
+    }
+        
       
     </>
+  
+  
+  
+  
   );
 
 

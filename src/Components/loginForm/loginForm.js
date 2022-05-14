@@ -1,4 +1,5 @@
 import React,{useState,useContext} from 'react';
+import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form, Input, Button, Row, Col} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
@@ -33,11 +34,7 @@ function UserLogin  (){
     try {
       const loggedInUser = await Parse.User.logIn(usernameValue, passwordValue);
       // logIn returns the corresponding ParseUser object
-      alert(
-        `Success! User ${loggedInUser.get(
-          'username'
-        )} has successfully loged in!`
-      );
+      
       // To verify that this is in fact the current user, `current` can be used
       const currentUser = await Parse.User.current();
       console.log(loggedInUser === currentUser);
@@ -48,6 +45,8 @@ function UserLogin  (){
       getCurrentUser();
       // authenticated
       authcontext.login();
+      authcontext.username = usernameValue
+      authcontext.password = passwordValue
       return true;
     } catch (error) {
       // Error can be caused by wrong parameters or lack of Internet connection
@@ -108,11 +107,11 @@ function UserLogin  (){
           <Button type="primary" htmlType="submit" className="login-form-button" onClick={() => doUserLogIn()}>
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <a href="/signup">register now!</a>
         </Form.Item>
       </Form>)
       :( 
-        <h2 className="heading">{`Hello ${currentUser.get('username')}!`}</h2>
+        <Navigate to="/todos"/>
       
       )
         }

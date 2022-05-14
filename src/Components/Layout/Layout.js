@@ -5,7 +5,7 @@ import Parse from 'parse/dist/parse.min.js';
 import './style/LayoutStyle.css'
 import AuthContext from '../../Context/auth.js'
 
-const { Header, Footer } = Layout;
+const { Header } = Layout;
 
 
 const tailFormItemLayout = {
@@ -34,14 +34,13 @@ function PageLayout (){
       await Parse.User.logOut();
       // To verify that current user is now empty, currentAsync can be used
       const currentUser = await Parse.User.current();
-      if (currentUser === null) {
-        alert('Success! No user is logged in anymore!');
-      }
       // Update state variable holding current user
       authContext.authenticated = false;
       authContext.username = '';
       authContext.password = '';
       authContext.phone = '';
+      authContext.currentUser = null;
+      authContext.logout();
   
       return true;
     } catch (error) {
@@ -55,7 +54,7 @@ function PageLayout (){
         <Header>
           {
             authContext.authenticated
-            ?  <Button shape='round' className="logout" onClick={() => doUserLogOut()}><NavLink to="/">Log Out</NavLink></Button>
+            ?  <Button shape='round' className="logout" onClick={() => doUserLogOut()}><NavLink to="/login">Log Out</NavLink></Button>
             :  <Button shape='round' className="login"><NavLink to='/login'>Log In</NavLink></Button>
           }
           <div className="logo" />
@@ -65,7 +64,6 @@ function PageLayout (){
             ?  (
                 <>
                 <Menu.Item key="1"><NavLink to='/todos'>Todos</NavLink></Menu.Item>
-                <Menu.Item key="2"><NavLink to='/login'>Login</NavLink></Menu.Item>
                 </>
                 )
             :  (

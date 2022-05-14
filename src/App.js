@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import UserLogin from './Components/loginForm/loginForm';
@@ -14,6 +14,9 @@ const PARSE_HOST_URL = 'https://parseapi.back4app.com/';
 const PARSE_JAVASCRIPT_KEY = 'GcagYgPfQG2wZ02VxVZP4zirRi8LRD3zCJFtYKva';
 Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
 Parse.serverURL = PARSE_HOST_URL;
+
+
+
 
 
 
@@ -34,15 +37,35 @@ function App() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setphoneNumber] = useState('');
+  const [correntUser, setCorrentUser] = useState(null);
+
+
+  // const getCurrentUser = async function () {
+  //   try{
+  //     const currentUser = await Parse.User.current();
+  //     // Update state variable holding current user
+  //     setCorrentUser(currentUser);
+  //   }
+  //   catch(error){
+  //     setCorrentUser(null);
+  //   }
+    
+    
+  // };
+
+
+  // useEffect(()=>{getCurrentUser();},[])
 
   return (
     <div className="App">
       <AuthContext.Provider value={{
         authenticated: auth,
+        currentUser:correntUser,
         username: username,
         password: password,
         phone: phoneNumber,
-        login: () => { Setauth(true) }
+        login: () => { Setauth(true) },
+        logout: () => { Setauth(false) }
       }}>
 
         <Router>

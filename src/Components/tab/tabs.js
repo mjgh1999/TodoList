@@ -1,9 +1,9 @@
 import React ,{useState,useEffect} from 'react';
-import { Tabs,Layout,Divider, Input, Button ,Row, Col ,Typography, Space} from 'antd';
+import { Tabs,Layout,Divider, Input, Button ,Typography, Space} from 'antd';
 import TaskIteam from '../task/taskItem';
 import Parse from 'parse/dist/parse.min.js';
-const { Header, Content } = Layout;
-const { Text, Link ,Title} = Typography;
+const { Content } = Layout;
+const { Text ,Title} = Typography;
 const { TabPane } = Tabs;
 
 
@@ -59,6 +59,7 @@ function TabView (){
 
     let doneTodoList = todos.filter(item=>item.done===true)
     let unDoneTodoList = todos.filter(item=>item.done===false)
+    
     
    
 
@@ -189,32 +190,43 @@ function TabView (){
 
                     <Tabs type="card" defaultActiveKey="1"  centered >
                     <TabPane tab={unDoneTodoList.length +' Todos '} key="1">
-
-                      {
-                        unDoneTodoList.length === 0
-                          ? <Text>There is no todo </Text>
-                          : unDoneTodoList.map(item=><TaskIteam 
-                                                        key={item.key} 
-                                                        item={item} 
-                                                        delete={deleteTodo} 
-                                                        toggleaction={toggleTodo} 
-                                                        edit={editTodo}
-                                                        load = {loading}/>)
-                      }
+                      
+                    {! loading 
+                      ?<> 
+                        { unDoneTodoList.length === 0
+                              ? (<Text>There is no todo </Text>)
+                              : (unDoneTodoList.map(item=><TaskIteam 
+                                                            key={item.key} 
+                                                            item={item} 
+                                                            delete={deleteTodo} 
+                                                            toggleaction={toggleTodo} 
+                                                            edit={editTodo}
+                                                            load = {loading}/>))
+                      }</>
+                      :(<p>loading...</p>)
+                    }
+                      
+                      
 
                     </TabPane>
                     <TabPane tab={doneTodoList.length +' Done '} key="2">
-                    {
-                        doneTodoList.length === 0
-                          ? <Text>There is no done task </Text>
-                          : doneTodoList.map(item=><TaskIteam 
-                                                      key={item.key} 
-                                                      item={item} 
-                                                      delete={deleteTodo} 
-                                                      toggleaction={toggleTodo} 
-                                                      edit={editTodo}
-                                                      load = {loading}/>)
-                      }
+                      {! loading 
+                        ?<>{
+                            doneTodoList.length === 0
+                              ? <Text>There is no done task </Text>
+                              : doneTodoList.map(item=><TaskIteam 
+                                                          key={item.key} 
+                                                          item={item} 
+                                                          delete={deleteTodo} 
+                                                          toggleaction={toggleTodo} 
+                                                          edit={editTodo}
+                                                          load = {loading}/>)
+                      }</>
+                      :(<p>loading...</p>)
+                    }
+                        
+                    
+                      
                       </TabPane>
                 </Tabs>
                     
