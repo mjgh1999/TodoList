@@ -28,15 +28,22 @@ function TabView (){
       parseQuery.equalTo('ownerUser', currentUser);
       try {
         let todolist = await parseQuery.find();
+        
+        console.log({todolist});
+        let addList = []
         for (let result of todolist) {
             let todoText = result.get('todoText')
-            let todoid = result.get('objectId')
+            let todoid = result.id
             let doneStatus = result.get('done')
-            setTodos([...todos,{key:todoid,done:doneStatus,text:todoText}]);
+            let newTodo = {key:todoid,done:doneStatus,text:todoText}
+            addList.push(newTodo);
         };
         // Be aware that empty or invalid queries return as an empty array
         // Set results to state variable
-        
+        console.log({addList});
+        setTodos([...todos,...addList]);
+        console.log({todos});
+
         return true;
       } catch (error) {
         // Error can be caused by lack of Internet connection
@@ -44,12 +51,16 @@ function TabView (){
         return false;
       };
     };
+
+
     useEffect(()=>{
       readTodos();
     },[])
+
     let doneTodoList = todos.filter(item=>item.done===true)
     let unDoneTodoList = todos.filter(item=>item.done===false)
     
+   
 
     const addButtonHandler= async function (){
       if(text){
@@ -64,7 +75,6 @@ function TabView (){
         try {
           await Todo.save();
           // Success
-          alert('Success! To-do created!');
           setLoading(false)
           setTodos([...todos,{key:Todo.id,done:false,text}]);
           setText('');
@@ -92,7 +102,11 @@ function TabView (){
         let queryResult = await parseQuery.find();
         let Todo = queryResult[0];
         await Todo.destroy();
+        
+        
+
         setTodos(todos.filter(item => item.key != key))
+
         return true;
       } catch (error) {
         alert(`Error! ${error.message}`);
@@ -108,8 +122,11 @@ function TabView (){
       try {
         let queryResult = await parseQuery.find();
         let Todo = queryResult[0];
-        Todo.set('done', ! Todo.done);
+        let statusDown = Todo.get('done')
+        
+        Todo.set('done', ! statusDown);
         Todo.save();
+
         let targetTodo = todos.find(item => item.key===key);
         targetTodo.done = !targetTodo.done
         let newTodoList = todos.filter(item => item.key != key)
@@ -131,12 +148,18 @@ function TabView (){
       try {
         let queryResult = await parseQuery.find();
         let Todo = queryResult[0];
-        Todo.set('todoText', text);
+
+        Todo.set('todoText', newText);
         Todo.save();
+
         let targetTodo = todos.find(item => item.key===key);
         targetTodo.text = newText
         let newTodoList = todos.filter(item => item.key != key)
+
+     
+
         setTodos([...newTodoList,targetTodo])
+        
         return true;
       } catch (error) {
         // Error can be caused by lack of Internet connection
