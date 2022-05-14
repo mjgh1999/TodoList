@@ -8,7 +8,7 @@ import { Form,
   Button,
   } from 'antd';
 import AuthContext from '../../Context/auth';
-import './styles/signUpForm.css'
+
 
 const { Option } = Select;
   const tailFormItemLayout = {
