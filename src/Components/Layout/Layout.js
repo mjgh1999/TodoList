@@ -68,7 +68,7 @@ function PageLayout (){
                 )
             :  (
                 <>
-                <Menu.Item><NavLink>Login</NavLink></Menu.Item>
+                <Menu.Item><NavLink to='/login'>Login</NavLink></Menu.Item>
                 </>
             )
           }
