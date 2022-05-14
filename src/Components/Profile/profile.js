@@ -9,7 +9,6 @@ import { Form,
   } from 'antd';
 import AuthContext from '../../Context/auth';
 
-
 const { Option } = Select;
   const tailFormItemLayout = {
     wrapperCol: {

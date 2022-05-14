@@ -55,7 +55,7 @@ function PageLayout (){
         <Header>
           {
             authContext.authenticated
-            ?  <Button shape='round' className="logout" onClick={() => doUserLogOut()}><NavLink>Log Out</NavLink></Button>
+            ?  <Button shape='round' className="logout" onClick={() => doUserLogOut()}><NavLink to="/">Log Out</NavLink></Button>
             :  <Button shape='round' className="login"><NavLink to='/login'>Log In</NavLink></Button>
           }
           <div className="logo" />
@@ -64,13 +64,13 @@ function PageLayout (){
             authContext.authenticated
             ?  (
                 <>
-                <Menu.Item><NavLink to='/todos'>Todos</NavLink></Menu.Item>
-                <Menu.Item><NavLink to='/login'>Login</NavLink></Menu.Item>
+                <Menu.Item key="1"><NavLink to='/todos'>Todos</NavLink></Menu.Item>
+                <Menu.Item key="2"><NavLink to='/login'>Login</NavLink></Menu.Item>
                 </>
                 )
             :  (
                 <>
-                <Menu.Item><NavLink>Login</NavLink></Menu.Item>
+                <Menu.Item key="3"><NavLink to="/login">Login</NavLink></Menu.Item>
                 </>
             )
           }
