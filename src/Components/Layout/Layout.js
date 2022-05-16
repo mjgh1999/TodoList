@@ -3,7 +3,7 @@ import { Layout, Menu , Button} from 'antd';
 import {NavLink } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import './style/LayoutStyle.css'
-import AuthContext from '../../Context/auth.js'
+import AuthContext from '../../Contexts/auth.js'
 
 const { Header } = Layout;
 
@@ -63,7 +63,8 @@ function PageLayout (){
             authContext.authenticated
             ?  (
                 <>
-                <Menu.Item key="1"><NavLink to='/todos'>Todos</NavLink></Menu.Item>
+                <Menu.Item><NavLink to='/todos'>Todos</NavLink></Menu.Item>
+                <Menu.Item><NavLink to='/profile'>Profile</NavLink></Menu.Item>
                 </>
                 )
             :  (

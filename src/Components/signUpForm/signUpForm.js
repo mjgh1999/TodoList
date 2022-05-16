@@ -8,7 +8,7 @@ import { Form,
   Col,
   Button,
   } from 'antd';
-import AuthContext from '../../Context/auth';
+import AuthContext from '../../Contexts/auth';
 import './styles/signUpForm.css'
 
 const { Option } = Select;

@@ -7,7 +7,7 @@ import { Form,
   Col,
   Button,
   } from 'antd';
-import AuthContext from '../../Context/auth';
+import AuthContext from '../../Contexts/auth';
 
 
 const { Option } = Select;
@@ -53,17 +53,9 @@ function UserEditProfile (){
 
 
   let saveProfile = async function (){
-    // This will create your query
-    let parseQuery1 = new Parse.Query("User");
-    parseQuery1.equalTo('username', authcontext.username);
-    let parseQuery2 = new Parse.Query("User");
-    parseQuery2.equalTo('phone', authcontext.phone);
-    let query = new Parse.Query('User');
-    query._andQuery([parseQuery1, parseQuery2]);
-    // The query will resolve only after calling this method
+   
     try {
-      let queryResult = await query.find();
-      let Person = queryResult[0];
+      const Person = Parse.User.current();
       Person.set('username', username);
       Person.set('password', password);
       Person.set('phone', phoneNumber);
@@ -75,6 +67,7 @@ function UserEditProfile (){
 
       SetEditMode(false);
       SetDisable(true);
+      alert('Profile was edited');
 
       return true;
     } catch (error) {
@@ -110,38 +103,37 @@ function UserEditProfile (){
 
           <Form.Item
             onChange={(event) => setUsername(event.target.value)}
-            placeholder = {authcontext.username}
-            disabled={disable}
+            initialValue = {authcontext.currentUser.get('username')}
             name="username"
             label="Username"
             rules={[
-              {
+              { 
+                disable: true,
                 required: true,
                 message: 'Please input your Username!',
               },
             ]}
           >
-            <Input/>
+            <Input disabled={disable}/>
           </Form.Item>
 
 
           <Form.Item
           onChange={(event) => setphoneNumber(event.target.value)}
-          placeholder = {authcontext.phone}
-          disabled={disable}
+          initialValue = {authcontext.currentUser.get('phone')}
+          
             name="phone"
             label="Phone Number"
             rules={[{ required: true, message: 'Please input your phone number!' }]}
           >
-            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+            <Input disabled={disable} addonBefore={prefixSelector} style={{ width: '100%' }} />
           </Form.Item>
 
 
         <Form.Item
-        disabled={disable}
-        placeholder = {authcontext.password}
         name="password"
         label="Password"
+        initialValue = {authcontext.currentUser.get('password')}
         rules={[
           {
             required: true,
@@ -150,10 +142,13 @@ function UserEditProfile (){
         ]}
         hasFeedback
       >
-        <Input.Password />
+        <Input.Password disabled={disable} />
           </Form.Item>
 
-        <Form.Item
+        {
+          editMode
+          ?(
+            <Form.Item
         onChange={(event) => setPassword(event.target.value)}
         disabled={disable}
         name="confirm"
@@ -179,6 +174,12 @@ function UserEditProfile (){
         <Input.Password />
         
         </Form.Item>
+          )
+          :(<></>)
+        }
+        
+
+
         <Form.Item {...tailFormItemLayout}>
             {
                 ! editMode

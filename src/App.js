@@ -1,11 +1,11 @@
 import React, { useState,useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
-import UserLogin from './Components/loginForm/loginForm';
-import UserRegistration from './Components/signUpForm/signUpForm';
+import UserLogin from './Components/LoginForm/loginForm.js';
+import UserRegistration from './Components/SignUpForm/signUpForm.js';
 import PageLayout from './Components/Layout/Layout.js';
 import TabView from './Components/tab/tabs.js'
-import AuthContext from './Context/auth';
+import AuthContext from './Contexts/auth';
 import UserEditProfile from './Components/Profile/profile';
 
 import Parse from 'parse/dist/parse.min.js';

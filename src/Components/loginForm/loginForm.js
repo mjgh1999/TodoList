@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form, Input, Button, Row, Col} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import AuthContext from '../../Context/auth';
+import AuthContext from '../../Contexts/auth';
 import './styles/loginForm.css'
 
 function UserLogin  (){

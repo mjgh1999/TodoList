@@ -1,7 +1,9 @@
-import React ,{useState,useEffect} from 'react';
+import React ,{useState,useEffect,useReducer} from 'react';
 import { Tabs,Layout,Divider, Input, Button ,Typography, Space} from 'antd';
 import TaskIteam from '../task/taskItem';
 import Parse from 'parse/dist/parse.min.js';
+import todoReducer from '../../Reducers/TodoReducer';
+
 const { Content } = Layout;
 const { Text ,Title} = Typography;
 const { TabPane } = Tabs;
@@ -14,11 +16,12 @@ const { TabPane } = Tabs;
 
 function TabView (){
 
-  
+    
 
     const [text,setText] = useState('')
     const [todos,setTodos]=useState([])
     const [loading,setLoading]=useState(false)
+    const [state,dispatch] = useReducer(todoReducer,{text : text,todos:todos,loading:loading})
 
     // prepare todo list
     const readTodos = async function () {
@@ -176,6 +179,7 @@ function TabView (){
     <>
                 <Layout >
                   <Content >
+                    
                     <Space direction="vertical">
                     <Title></Title>
                     <Title>Welcome!</Title>
@@ -186,6 +190,7 @@ function TabView (){
                     </Space>
                     
                     </Space>
+                    
                     <Divider></Divider>
 
                     <Tabs type="card" defaultActiveKey="1"  centered >
