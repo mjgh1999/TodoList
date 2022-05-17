@@ -3,10 +3,10 @@ import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form, Input, Button, Row, Col} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import AuthContext from '../../Contexts/auth';
-import './styles/loginForm.css'
+import AuthContext from '../../../../Contexts/Auth';
+import './../Styles/LoginFormStyle.css'
 
-function UserLogin  (){
+function UserLogin(){
 
   const authcontext = useContext(AuthContext);
 
@@ -18,35 +18,25 @@ function UserLogin  (){
   const [password, setPassword] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Function that will return current user and also update current username
+
   const getCurrentUser = async function () {
     const currentUser = await Parse.User.current();
-    // Update state variable holding current user
     setCurrentUser(currentUser);
     return currentUser;
   };
 
 
   const doUserLogIn = async function () {
-    // Note that these values come from state variables that we've declared before
     const usernameValue = username;
     const passwordValue = password;
     try {
       const loggedInUser = await Parse.User.logIn(usernameValue, passwordValue);
-      // logIn returns the corresponding ParseUser object
-      
-      // To verify that this is in fact the current user, `current` can be used
-      const currentUser = await Parse.User.current();
-      // Clear input fields
       setUsername('');
       setPassword('');
       // Update state variable holding current user
       getCurrentUser();
       // authenticated
-      authcontext.login();
       authcontext.authenticated =true;
-      authcontext.username = usernameValue
-      authcontext.password = passwordValue
       authcontext.currentUser = currentUser
       return true;
     } catch (error) {

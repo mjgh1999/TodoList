@@ -2,46 +2,22 @@ import React, {useContext } from 'react';
 import { Layout, Menu , Button} from 'antd';
 import {NavLink } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
-import './style/LayoutStyle.css'
-import AuthContext from '../../Contexts/auth.js'
+import AuthContext from '../../../Contexts/Auth'
+import './Styles/HeaderStyles.css'
 
 const { Header } = Layout;
 
 
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0,
-    },
-    sm: {
-      span: 8,
-      offset: 8,
-    },
-  },
-};
 
 
-
-
-
-function PageLayout (){
+function PageHeader (){
  
   const authContext = useContext(AuthContext);
       
   const doUserLogOut = async function () {
     try {
       await Parse.User.logOut();
-      // To verify that current user is now empty, currentAsync can be used
-      const currentUser = await Parse.User.current();
-      // Update state variable holding current user
       authContext.authenticated = false;
-      authContext.username = '';
-      authContext.password = '';
-      authContext.phone = '';
-      authContext.currentUser = null;
-      authContext.logout();
-  
       return true;
     } catch (error) {
       alert(`Error! ${error.message}`);
@@ -82,4 +58,4 @@ function PageLayout (){
       
     
   }
-  export default PageLayout;
+  export default PageHeader;

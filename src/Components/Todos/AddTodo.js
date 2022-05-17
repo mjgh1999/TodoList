@@ -1,20 +1,32 @@
-import React ,{useState,useEffect,useReducer,useContext} from 'react';
+import React ,{useState,useContext} from 'react';
 import { Input, Button ,Typography, Space} from 'antd';
-import TodoContext from '../../Contexts/todoContext';
-import AuthContext from '../../Contexts/auth.js'
+import TodoContext from '../../Contexts/TodoContext';
+import Parse from 'parse/dist/parse.min.js';
 
 const { Text ,Title} = Typography;
 
 
 function AddTodo(){
-    const authContext = useContext(AuthContext);
+
     const todoContext = useContext(TodoContext);
-    
-    
-    
     const [text,setText] = useState('');
-    let inputHandler= e =>setText(e.target.value)
+
+    const inputHandler = e =>setText(e.target.value)
     
+    const addTodo = async function () {
+        if (text){
+            let Todo = new Parse.Object('Todos');
+            const currentUser = Parse.User.current(); 
+            Todo.set('todoText', text);
+            Todo.set('done', false);
+            Todo.set('ownerUser',currentUser)
+            await Todo.save();
+            let newTodo = {key:Todo.id,done:false,text};
+            todoContext.dispatch({type:'add_todo', payload:{newTodo:newTodo}})
+            setText('');
+            
+        }
+    }
 
     return(
         <Space direction="vertical">
@@ -24,7 +36,7 @@ function AddTodo(){
         
         <Space direction="horizontal">
             <Input placeholder="i want to do ..." value={text} onChange={inputHandler} />
-            <Button type="primary" onClick={ ()=>todoContext.dispatch( { type:'add_todo', payload:{ text : text }})}>add</Button> 
+            <Button type="primary" onClick={addTodo}>add</Button> 
         </Space>
                     
         </Space>

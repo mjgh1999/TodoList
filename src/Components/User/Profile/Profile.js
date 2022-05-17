@@ -1,5 +1,4 @@
 import React,{useState,useContext} from 'react';
-import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form,
   Input,
@@ -8,8 +7,8 @@ import { Form,
   Col,
   Button,
   } from 'antd';
-import AuthContext from '../../Contexts/auth';
-import './styles/signUpForm.css'
+import AuthContext from '../../../Contexts/Auth';
+
 
 const { Option } = Select;
   const tailFormItemLayout = {
@@ -34,9 +33,10 @@ const { Option } = Select;
   );
 
 
-function UserRegistration (){
+function UserEditProfile (){
 
   const authcontext = useContext(AuthContext);
+
 
   const [form] = Form.useForm();
   const onFinish = (values) => {
@@ -44,45 +44,45 @@ function UserRegistration (){
 };
 
   // State variables
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [phoneNumber, setphoneNumber] = useState('');
-  const [signUpDown,setSignupDown] = useState(false);
-
-  // Functions used by the screen components
-  const doUserRegistration = async function () {
+  const [username, setUsername] = useState(authcontext.username);
+  const [password, setPassword] = useState(authcontext.password);
+  const [phoneNumber, setphoneNumber] = useState(authcontext.phone);
+  const [editMode,SetEditMode] = useState(false);
+  const [disable,SetDisable] = useState(true);
 
 
-    // Note that these values come from state variables that we've declared before
-    const usernameValue = username;
-    const passwordValue = password;
-    const phoneValue = phoneNumber;
+
+  let saveProfile = async function (){
+   
     try {
-      // Since the signUp method returns a Promise, we need to call it using await
-      const createdUser = await Parse.User.signUp(usernameValue, passwordValue,{"phone":phoneValue});
-      // authenticated
-      authcontext.login();
-      const currentUser = await Parse.User.current();
-      authcontext.currentUser = currentUser;
-      authcontext.username = usernameValue;
-      authcontext.password = passwordValue;
-      authcontext.phone = phoneValue;
-      authcontext.authenticated =true;
-      setSignupDown(true);
+      const Person = await Parse.User.current();
+      Person.set('username', username);
+      Person.set('password', password);
+      Person.set('phone', phoneNumber);
+      Person.save();
+
+      SetEditMode(false);
+      SetDisable(true);
+      alert('Profile was edited');
+
       return true;
     } catch (error) {
-      // signUp can fail if any parameter is blank or failed an uniqueness check on the server
-      alert(`Error! ${error}`);
+      // Error can be caused by lack of Internet connection
+      alert(`Error! ${error.message}`);
       return false;
     }
-  };
+    
+  }
+
+  let activeEdit = function(){
+      SetEditMode(true);
+      SetDisable(false);
+  }
+
+
 
   return (
-    
-  
     <>  
-    {!signUpDown
-     ?(<>
         <Row justify="space-around" align="middle" className='full-center '>
           <Col >
             <Form 
@@ -99,32 +99,37 @@ function UserRegistration (){
 
           <Form.Item
             onChange={(event) => setUsername(event.target.value)}
+            initialValue = {authcontext.currentUser.get('username')}
             name="username"
             label="Username"
             rules={[
-              {
+              { 
+                disable: true,
                 required: true,
                 message: 'Please input your Username!',
               },
             ]}
           >
-            <Input/>
+            <Input disabled={disable}/>
           </Form.Item>
 
 
           <Form.Item
           onChange={(event) => setphoneNumber(event.target.value)}
+          initialValue = {authcontext.currentUser.get('phone')}
+          
             name="phone"
             label="Phone Number"
             rules={[{ required: true, message: 'Please input your phone number!' }]}
           >
-            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+            <Input disabled={disable} addonBefore={prefixSelector} style={{ width: '100%' }} />
           </Form.Item>
 
 
-          <Form.Item
+        <Form.Item
         name="password"
         label="Password"
+        initialValue = {authcontext.currentUser.get('password')}
         rules={[
           {
             required: true,
@@ -133,11 +138,15 @@ function UserRegistration (){
         ]}
         hasFeedback
       >
-        <Input.Password />
+        <Input.Password disabled={disable} />
           </Form.Item>
 
-        <Form.Item
+        {
+          editMode
+          ?(
+            <Form.Item
         onChange={(event) => setPassword(event.target.value)}
+        disabled={disable}
         name="confirm"
         label="Confirm Password"
         dependencies={['password']}
@@ -159,32 +168,39 @@ function UserRegistration (){
         ]}
       >
         <Input.Password />
+        
         </Form.Item>
+          )
+          :(<></>)
+        }
+        
 
 
         <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit" onClick={() => doUserRegistration()}>
-          Register
-        </Button>
+            {
+                ! editMode
+                ?(
+                <Button type="primary" htmlType="submit" onClick={() => activeEdit()}>
+                    Edit
+                </Button>)
+                :(
+                <Button type="primary" htmlType="submit" onClick={() => saveProfile()}>
+                    Save
+                </Button>
+                )
+            }
+        
       </Form.Item>
 
 
             </Form>
           </Col>
         </Row>
-     </>)
-     :(<><Navigate to="/todos"/></>)
-    }
-        
       
     </>
-  
-  
-  
-  
   );
 
 
 };
 
-export default UserRegistration;
+export default UserEditProfile;

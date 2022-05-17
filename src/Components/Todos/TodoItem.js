@@ -1,18 +1,18 @@
 import React,{useState} from 'react';
-import { Row,Col,Button,Typography,Space,Input } from 'antd';
-import '../task/taskStyle.css';
+import { Row,Col,Button,Space,Input } from 'antd';
+import '../Todos/Styles/TodoItemStyles.css'
 
 
 
 
-function TaskIteam (probs){
+function TodoIteam (props){
 
     const [editstatus,setEditStatus] = useState(false)
-    const [editText,setEditText] = useState(probs.item.text)
+    const [editText,setEditText] = useState(props.item.text)
     let inputHandler = e => setEditText(e.target.value)
 
     const saveEditHandler = text =>{
-        probs.edit(probs.item.key,text);
+        props.edit(props.item.key,text);
         setEditStatus(false);
     }
   
@@ -25,20 +25,20 @@ function TaskIteam (probs){
                             <Row justify="space-around" align="middle" className='task-box'>
                                <Col xs={24} sm={24} md={14} lg={16} xl={12}>
                                
-                                <p className='task-text'>{probs.item.text}</p>
+                                <p className='task-text'>{props.item.text}</p>
                         
                                 
                                 </Col>
                             
                                 <Space align='center'>
                                     {
-                                        ! probs.item.done  
+                                        ! props.item.done  
                                         ? <Col xs={4} sm={4} md={4} lg={6} xl={6}> 
-                                            <Button shape='round' className='done-btn' onClick={()=>probs.toggleaction(probs.item.key)}>done</Button>
+                                            <Button shape='round' className='done-btn' onClick={()=>props.toggleaction(props.item.key)}>done</Button>
                                         </Col>
                                         :
                                         <Col xs={4} sm={4} md={4} lg={6} xl={6}>
-                                            <Button shape='round' className='undone-btn' onClick={()=>probs.toggleaction(probs.item.key)} >undone</Button>
+                                            <Button shape='round' className='undone-btn' onClick={()=>props.toggleaction(props.item.key)} >undone</Button>
                                         </Col>
                                     }
                                     
@@ -47,7 +47,7 @@ function TaskIteam (probs){
                                     </Col>
                                     
                                     <Col xs={4} sm={4} md={4} lg={6} xl={6}>
-                                        <Button shape='round' danger className='delete-btn' onClick={()=>probs.delete(probs.item.key)}>delete</Button>
+                                        <Button shape='round' danger className='delete-btn' onClick={()=>props.delete(props.item.key)}>delete</Button>
                                     </Col>
                                     
                                 </Space>
@@ -75,4 +75,4 @@ function TaskIteam (probs){
     );
       }
     
-export default TaskIteam;
+export default TodoIteam;

@@ -1,4 +1,5 @@
 import React,{useState,useContext} from 'react';
+import { Navigate } from 'react-router-dom';
 import Parse from 'parse/dist/parse.min.js';
 import { Form,
   Input,
@@ -7,8 +8,8 @@ import { Form,
   Col,
   Button,
   } from 'antd';
-import AuthContext from '../../Contexts/auth';
-
+import AuthContext from '../../../../Contexts/Auth';
+import './../Styles/SignUpFormStyle.css'
 
 const { Option } = Select;
   const tailFormItemLayout = {
@@ -33,10 +34,9 @@ const { Option } = Select;
   );
 
 
-function UserEditProfile (){
+function UserRegistration (){
 
   const authcontext = useContext(AuthContext);
-
 
   const [form] = Form.useForm();
   const onFinish = (values) => {
@@ -44,49 +44,41 @@ function UserEditProfile (){
 };
 
   // State variables
-  const [username, setUsername] = useState(authcontext.username);
-  const [password, setPassword] = useState(authcontext.password);
-  const [phoneNumber, setphoneNumber] = useState(authcontext.phone);
-  const [editMode,SetEditMode] = useState(false);
-  const [disable,SetDisable] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [phoneNumber, setphoneNumber] = useState('');
+  const [signUpDown,setSignupDown] = useState(false);
+
+  // Functions used by the screen components
+  const doUserRegistration = async function () {
 
 
-
-  let saveProfile = async function (){
-   
+    // Note that these values come from state variables that we've declared before
+    const usernameValue = username;
+    const passwordValue = password;
+    const phoneValue = phoneNumber;
     try {
-      const Person = Parse.User.current();
-      Person.set('username', username);
-      Person.set('password', password);
-      Person.set('phone', phoneNumber);
-      Person.save();
-
-      authcontext.username = username;
-      authcontext.password = password;
-      authcontext.phone = phoneNumber;
-
-      SetEditMode(false);
-      SetDisable(true);
-      alert('Profile was edited');
-
+      // Since the signUp method returns a Promise, we need to call it using await
+      const createdUser = await Parse.User.signUp(usernameValue, passwordValue,{"phone":phoneValue});
+      // authenticated
+      const currentUser = await Parse.User.current();
+      authcontext.currentUser = currentUser;
+      authcontext.authenticated =true;
+      setSignupDown(true);
       return true;
     } catch (error) {
-      // Error can be caused by lack of Internet connection
-      alert(`Error! ${error.message}`);
+      // signUp can fail if any parameter is blank or failed an uniqueness check on the server
+      alert(`Error! ${error}`);
       return false;
     }
-    
-  }
-
-  let activeEdit = function(){
-      SetEditMode(true);
-      SetDisable(false);
-  }
-
-
+  };
 
   return (
+    
+  
     <>  
+    {!signUpDown
+     ?(<>
         <Row justify="space-around" align="middle" className='full-center '>
           <Col >
             <Form 
@@ -103,37 +95,32 @@ function UserEditProfile (){
 
           <Form.Item
             onChange={(event) => setUsername(event.target.value)}
-            initialValue = {authcontext.currentUser.get('username')}
             name="username"
             label="Username"
             rules={[
-              { 
-                disable: true,
+              {
                 required: true,
                 message: 'Please input your Username!',
               },
             ]}
           >
-            <Input disabled={disable}/>
+            <Input/>
           </Form.Item>
 
 
           <Form.Item
           onChange={(event) => setphoneNumber(event.target.value)}
-          initialValue = {authcontext.currentUser.get('phone')}
-          
             name="phone"
             label="Phone Number"
             rules={[{ required: true, message: 'Please input your phone number!' }]}
           >
-            <Input disabled={disable} addonBefore={prefixSelector} style={{ width: '100%' }} />
+            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
           </Form.Item>
 
 
-        <Form.Item
+          <Form.Item
         name="password"
         label="Password"
-        initialValue = {authcontext.currentUser.get('password')}
         rules={[
           {
             required: true,
@@ -142,15 +129,11 @@ function UserEditProfile (){
         ]}
         hasFeedback
       >
-        <Input.Password disabled={disable} />
+        <Input.Password />
           </Form.Item>
 
-        {
-          editMode
-          ?(
-            <Form.Item
+        <Form.Item
         onChange={(event) => setPassword(event.target.value)}
-        disabled={disable}
         name="confirm"
         label="Confirm Password"
         dependencies={['password']}
@@ -172,39 +155,32 @@ function UserEditProfile (){
         ]}
       >
         <Input.Password />
-        
         </Form.Item>
-          )
-          :(<></>)
-        }
-        
 
 
         <Form.Item {...tailFormItemLayout}>
-            {
-                ! editMode
-                ?(
-                <Button type="primary" htmlType="submit" onClick={() => activeEdit()}>
-                    Edit
-                </Button>)
-                :(
-                <Button type="primary" htmlType="submit" onClick={() => saveProfile()}>
-                    Save
-                </Button>
-                )
-            }
-        
+        <Button type="primary" htmlType="submit" onClick={() => doUserRegistration()}>
+          Register
+        </Button>
       </Form.Item>
 
 
             </Form>
           </Col>
         </Row>
+     </>)
+     :(<><Navigate to="/todos"/></>)
+    }
+        
       
     </>
+  
+  
+  
+  
   );
 
 
 };
 
-export default UserEditProfile;
+export default UserRegistration;
