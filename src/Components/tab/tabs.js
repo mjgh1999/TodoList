@@ -1,9 +1,10 @@
-import React ,{useState,useEffect,useReducer} from 'react';
+import React ,{useState,useEffect,useReducer,useContext} from 'react';
 import { Tabs,Layout,Divider, Input, Button ,Typography, Space} from 'antd';
 import TaskIteam from '../task/taskItem';
 import Parse from 'parse/dist/parse.min.js';
 import todoReducer from '../../Reducers/TodoReducer';
-
+import TodoContext from '../../Contexts/todoContext';
+import AddTodo from './../Todos/AddTodo.js'
 const { Content } = Layout;
 const { Text ,Title} = Typography;
 const { TabPane } = Tabs;
@@ -21,7 +22,17 @@ function TabView (){
     const [text,setText] = useState('')
     const [todos,setTodos]=useState([])
     const [loading,setLoading]=useState(false)
-    const [state,dispatch] = useReducer(todoReducer,{text : text,todos:todos,loading:loading})
+
+    //const [state,dispatch] = useReducer(todoReducer,{text : text,todos:todos,loading:loading})
+    const todoContext = useContext(TodoContext);
+    
+    useEffect(()=>{
+      todoContext.dispatch({ type:'read_todo'});
+      console.log(todoContext.state);
+      //readTodos();
+    },[])
+    
+  
 
     // prepare todo list
     const readTodos = async function () {
@@ -31,8 +42,7 @@ function TabView (){
       parseQuery.equalTo('ownerUser', currentUser);
       try {
         let todolist = await parseQuery.find();
-        
-        console.log({todolist});
+    
         let addList = []
         for (let result of todolist) {
             let todoText = result.get('todoText')
@@ -43,9 +53,12 @@ function TabView (){
         };
         // Be aware that empty or invalid queries return as an empty array
         // Set results to state variable
-        console.log({addList});
-        setTodos([...todos,...addList]);
-        console.log({todos});
+        
+        //setTodos([...todos,...addList]);
+        todoContext.todos = addList;
+        setTodos(todoContext.todos);
+        
+        console.log(todoContext.todos);
 
         return true;
       } catch (error) {
@@ -55,14 +68,19 @@ function TabView (){
       };
     };
 
-
-    useEffect(()=>{
-      readTodos();
-    },[])
-
-    let doneTodoList = todos.filter(item=>item.done===true)
-    let unDoneTodoList = todos.filter(item=>item.done===false)
     
+   
+
+ 
+
+    
+      
+      let allTodos = todoContext.todos
+      console.log({allTodos});
+      // let doneTodoList = todos.filter(item=>item.done===true)
+      // let unDoneTodoList = todos.filter(item=>item.done===false)
+      let doneTodoList = allTodos.filter(item=>item.done===true);
+      let unDoneTodoList = allTodos.filter(item=>item.done===false);
     
    
 
@@ -180,7 +198,7 @@ function TabView (){
                 <Layout >
                   <Content >
                     
-                    <Space direction="vertical">
+                    {/* <Space direction="vertical">
                     <Title></Title>
                     <Title>Welcome!</Title>
                     <Text>To get started, add some items to your list:</Text>
@@ -189,7 +207,9 @@ function TabView (){
                         <Button type="primary" onClick={addButtonHandler}>add</Button>
                     </Space>
                     
-                    </Space>
+                    </Space> */}
+
+                    <AddTodo/>
                     
                     <Divider></Divider>
 
@@ -201,6 +221,7 @@ function TabView (){
                         { unDoneTodoList.length === 0
                               ? (<Text>There is no todo </Text>)
                               : (unDoneTodoList.map(item=><TaskIteam 
+                                                            // dispatch = {dispatch}
                                                             key={item.key} 
                                                             item={item} 
                                                             delete={deleteTodo} 

@@ -1,11 +1,20 @@
-import React ,{useState,useEffect} from 'react';
+import React ,{useState,useEffect,useReducer,useContext} from 'react';
+import { Input, Button ,Typography, Space} from 'antd';
+import TodoContext from '../../Contexts/todoContext';
+import AuthContext from '../../Contexts/auth.js'
+
+const { Text ,Title} = Typography;
 
 
-
-function addTodo(){
-
+function AddTodo(){
+    const authContext = useContext(AuthContext);
+    const todoContext = useContext(TodoContext);
+    
+    
+    
     const [text,setText] = useState('');
-
+    let inputHandler= e =>setText(e.target.value)
+    
 
     return(
         <Space direction="vertical">
@@ -15,7 +24,7 @@ function addTodo(){
         
         <Space direction="horizontal">
             <Input placeholder="i want to do ..." value={text} onChange={inputHandler} />
-            <Button type="primary" onClick={addButtonHandler}>add</Button>
+            <Button type="primary" onClick={ ()=>todoContext.dispatch( { type:'add_todo', payload:{ text : text }})}>add</Button> 
         </Space>
                     
         </Space>
@@ -25,5 +34,5 @@ function addTodo(){
 
 }
 
-export default addTodo;
+export default AddTodo;
 
