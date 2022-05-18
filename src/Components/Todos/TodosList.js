@@ -1,5 +1,5 @@
 import React ,{useState,useEffect,useContext} from 'react';
-import { Tabs,Typography} from 'antd';
+import { Tabs,Typography,Spin} from 'antd';
 import TodoIteam from './TodoItem';
 import Parse from 'parse/dist/parse.min.js';
 import TodoContext from '../../Contexts/TodoContext';
@@ -13,17 +13,20 @@ function TodosList (){
     
 
     const [loading,setLoading]=useState(false)
+    const[buttonLoading,setButtonLoading]=useState(false);
     const todoContext = useContext(TodoContext);
     
     useEffect(()=>{
-      setLoading(true);
+      
       initTodos();
-      setLoading(false);
+      
     },[todoContext.state])
   
 
     // prepare todo list
     const initTodos = () => {
+      setLoading(true);
+      console.log(loading);
       const parseQuery = new Parse.Query('Todos');
       const currentUser = Parse.User.current();
       parseQuery.equalTo('ownerUser', currentUser);
@@ -33,21 +36,26 @@ function TodosList (){
             fetchTodoList.push({ key:todo.id, done:todo.get('done'), text:todo.get('todoText')})
           });
           todoContext.dispatch({type:'init_todo', payload:{todos:fetchTodoList}})
-          
+          setLoading(false);
         })
       };
 
     let deleteTodo = (key) => {
+      setButtonLoading(true)
       let parseQuery = new Parse.Query("Todos");
       parseQuery.equalTo('objectId', key);
       parseQuery.find().then(result =>{
       let Todo = result[0];
       Todo.destroy();
       });
-      todoContext.dispatch({type:'delete_todo', payload:{key:key}}) 
+      todoContext.dispatch({type:'delete_todo', payload:{key:key}})
+      setLoading(false);
+      
+      
       }
 
     let toggleTodo = async function (key){
+      setButtonLoading(true)
       let parseQuery = new Parse.Query("Todos");
       parseQuery.equalTo('objectId', key);
       parseQuery.find().then(result =>{
@@ -56,10 +64,12 @@ function TodosList (){
         Todo.set('done', ! statusDown);
         Todo.save();
       });
-      todoContext.dispatch({type:'toggle_todo', payload:{key:key}})     
+      todoContext.dispatch({type:'toggle_todo', payload:{key:key}})
+      setButtonLoading(false)     
     }
 
     let editTodo = async function (key,newText){
+      setButtonLoading(true)
       let parseQuery = new Parse.Query("Todos");
       parseQuery.equalTo('objectId', key);
       parseQuery.find().then(result => {
@@ -68,6 +78,7 @@ function TodosList (){
         Todo.save();
       });
       todoContext.dispatch({type:'edit_todo', payload:{key:key,newText:newText}})
+      setButtonLoading(false)
     }
       
 
@@ -91,9 +102,9 @@ function TodosList (){
                                                             delete={deleteTodo} 
                                                             toggleaction={toggleTodo} 
                                                             edit={editTodo}
-                                                            load = {loading}/>))
+                                                           />))
                       }</>
-                      :(<p>loading...</p>)
+                      :(<Spin size="large" />)
                     }
                       
 
@@ -109,9 +120,10 @@ function TodosList (){
                                                           delete={deleteTodo} 
                                                           toggleaction={toggleTodo} 
                                                           edit={editTodo}
-                                                          load = {loading}/>)
+                                                          buttonLoading = {buttonLoading}
+                                                          />)
                       }</>
-                      :(<p>loading...</p>)
+                      :(<Spin size="large" />)
                     }
                         
                     

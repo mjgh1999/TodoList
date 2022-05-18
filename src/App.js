@@ -66,6 +66,7 @@ function App() {
                 <Route path='/signup' element={<UserRegistration />} />        
                 <Route path='/profile' element={<PrivateRoute isAuthenticated={currentUserpars} children={<UserEditProfile />} />} />         
                 <Route path='/todos' element={<PrivateRoute isAuthenticated={currentUserpars} children={<TodoMain />} />} />
+                <Route path='/' element={<PrivateRoute isAuthenticated={currentUserpars} children={<TodoMain />} />} />
               </Routes>
             </Router>
 

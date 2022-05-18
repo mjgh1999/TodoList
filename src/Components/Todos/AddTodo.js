@@ -9,12 +9,14 @@ const { Text ,Title} = Typography;
 function AddTodo(){
 
     const todoContext = useContext(TodoContext);
+    const[buttonLoading,setButtonLoading]=useState(false);
     const [text,setText] = useState('');
 
     const inputHandler = e =>setText(e.target.value)
     
     const addTodo = async function () {
         if (text){
+            setButtonLoading(true);
             let Todo = new Parse.Object('Todos');
             const currentUser = Parse.User.current(); 
             Todo.set('todoText', text);
@@ -23,6 +25,7 @@ function AddTodo(){
             await Todo.save();
             let newTodo = {key:Todo.id,done:false,text};
             todoContext.dispatch({type:'add_todo', payload:{newTodo:newTodo}})
+            setButtonLoading(false);
             setText('');
             
         }
@@ -36,7 +39,7 @@ function AddTodo(){
         
         <Space direction="horizontal">
             <Input placeholder="i want to do ..." value={text} onChange={inputHandler} />
-            <Button type="primary" onClick={addTodo}>add</Button> 
+            <Button type="primary" onClick={addTodo} loading={buttonLoading}>add</Button> 
         </Space>
                     
         </Space>
