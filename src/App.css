@@ -1,20 +1,8 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
 .App {
   font-family: sans-serif;
   text-align: center;
-  
-  /*height: 100%;
-  width: 100%;
-
-  display: flex;
-  align-items:center;
-  justify-content:center;
-
-   display: grid;
-  grid-template-columns: 100%;
-  align-items:center;
-  justify-content:center; */
 }
 
 .App-logo {
@@ -50,4 +38,108 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+#components-layout-demo-top .logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+.ant-row-rtl #components-layout-demo-top .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+
+.site-layout-content {
+  min-height: 280px;
+  padding: 24px;
+  background: #fff;
+}
+
+.login {
+  float: right;
+  width: 150px;
+  height: 50px;
+  margin: 7px 5px;
+  align-self: center;
+  padding-bottom: 10 px;
+  background-color: #4caf50;
+  color: white;
+}
+
+.logout {
+  float: right;
+  width: 150px;
+  height: 50px;
+  margin: 7px 5px;
+  align-self: center;
+  padding-bottom: 10 px;
+  background-color: #f44336;
+  color: white;
+}
+
+.status-text {
+  margin-bottom: 10px;
+  align: center;
+}
+
+.ant-row-rtl .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
+[data-theme="dark"] .site-layout-content {
+  background: #141414;
+}
+
+.login-status {
+  float: right;
+}
+
+.site-card-border-less-wrapper {
+  padding: 20px;
+  /*background: #ececec;*/
+  background: #2110ba;
+  height: 100px;
+}
+
+.task-text {
+  text-align: left;
+  width: 50%;
+  direction: ltr;
+}
+.task-box {
+  padding: 10px;
+  margin: 10px;
+  border: 1px;
+  border-radius: 2px;
+}
+
+.task-box:nth-child(odd) {
+  background-color: #ececec;
+}
+
+.task-box:nth-child(even) {
+  background-color: #ececec;
+}
+
+.done-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.undone-btn {
+  background-color: #f4e136;
+  color: black;
+}
+
+.edit-btn {
+  background-color: rgb(34, 0, 255);
+  color: white;
 }
