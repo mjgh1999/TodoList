@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import Parse from "parse/dist/parse.min.js";
+import React from "react";
 
 function todoReducer(prevState, action) {
   switch (action.type) {
