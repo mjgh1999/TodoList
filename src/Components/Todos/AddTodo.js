@@ -1,33 +1,59 @@
 import React, { useState, useContext } from "react";
-import { Input, Button, Typography, Space, Form, Row, Col } from "antd";
+import {
+  Input,
+  Button,
+  Typography,
+  Space,
+  Form,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+} from "antd";
 import TodoContext from "../../Contexts/TodoContext";
 import Parse from "parse/dist/parse.min.js";
 
 const { Text, Title } = Typography;
+const { Option } = Select;
 
 function AddTodo() {
   const todoContext = useContext(TodoContext);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [text, setText] = useState("");
-
-  //const inputHandler = (e) => setText(e.target.value);
+  const [priority, setpriority] = useState("2");
+  const [dueDate, setDueDate] = useState(null);
 
   const addTodo = () => {
     if (text) {
       setButtonLoading(true);
+      let todoDue = "Not Set";
       let Todo = new Parse.Object("Todos");
       const currentUser = Parse.User.current();
       Todo.set("todoText", text);
       Todo.set("done", false);
+      Todo.set("priority", priority);
+      if (dueDate) {
+        Todo.set("dueDate", dueDate.toDate());
+        todoDue = dueDate.toDate().toLocaleDateString();
+      }
       Todo.set("ownerUser", currentUser);
       Todo.save().then((Todo) => {
-        let newTodo = { key: Todo.id, done: false, text };
+        let newTodo = {
+          key: Todo.id,
+          done: false,
+          text,
+          priority: priority,
+          dueDate: todoDue,
+        };
+
         todoContext.dispatch({
           type: "add_todo",
           payload: { newTodo: newTodo },
         });
-        setButtonLoading(false);
         setText("");
+        setButtonLoading(false);
+        setDueDate(null);
+        setpriority("2");
       });
     }
   };
@@ -40,22 +66,51 @@ function AddTodo() {
 
       <Space direction="horizontal">
         <Form name="add_todo" layout="inline">
-          <Form.Item
-            name="title"
-            onChange={(event) => setText(event.target.value)}
-          >
-            <Input placeholder="i want to do ..." value={text} />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={addTodo}
-              loading={buttonLoading}
-            >
-              add
-            </Button>
-          </Form.Item>
+          <Row align="middle" justify="space-around" gutter={[10, 50]}>
+            <Col xs={24} sm={24} md={14} lg={8} xl={8}>
+              <Form.Item
+                name="title"
+                label="Title"
+                onChange={(event) => setText(event.target.value)}
+              >
+                <Input placeholder="i want to do ..." value={text} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={14} lg={4} xl={4}>
+              <Form.Item name="priority" label="priority">
+                <Select
+                  placeholder="priority"
+                  defaultValue="neutral"
+                  onSelect={(value) => setpriority(value)}
+                >
+                  <Option value="1">important</Option>
+                  <Option value="2">neutral</Option>
+                  <Option value="3">unimportant</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={14} lg={7} xl={7} offset={1}>
+              <Form.Item label="Due Date">
+                <DatePicker
+                  style={{ width: "100%" }}
+                  onChange={(value) => setDueDate(value)}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={24} sm={24} md={14} lg={3} xl={3}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  onClick={addTodo}
+                  loading={buttonLoading}
+                  block
+                >
+                  add
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Space>
     </Space>

@@ -68,7 +68,7 @@ function App() {
                 path="/profile"
                 element={
                   <PrivateRoute
-                    isAuthenticated={auth}
+                    isAuthenticated={correntUser}
                     children={<UserEditProfile />}
                   />
                 }
@@ -77,7 +77,7 @@ function App() {
                 path="/todos"
                 element={
                   <PrivateRoute
-                    isAuthenticated={auth}
+                    isAuthenticated={correntUser}
                     children={<TodoMain />}
                   />
                 }
@@ -86,7 +86,7 @@ function App() {
                 path="/"
                 element={
                   <PrivateRoute
-                    isAuthenticated={auth}
+                    isAuthenticated={correntUser}
                     children={<TodoMain />}
                   />
                 }

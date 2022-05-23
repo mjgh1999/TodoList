@@ -1,20 +1,24 @@
 import React, { useState, useContext } from "react";
-import { Row, Col, Button, Space, Input } from "antd";
+import { Row, Col, Button, Space, Input, Form, Select, DatePicker } from "antd";
 import Parse from "parse/dist/parse.min.js";
 import TodoContext from "../../Contexts/TodoContext";
 import "../Todos/Styles/TodoItemStyles.css";
 
+const { Option } = Select;
+
 function TodoIteam(props) {
   const [editstatus, setEditStatus] = useState(false);
   const [editText, setEditText] = useState(props.item.text);
+  const [editpriority, setEditpriority] = useState(props.item.priority);
+  const [editdueDate, setEditDueDate] = useState(props.item.dueDate);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const todoContext = useContext(TodoContext);
 
   let inputHandler = (e) => setEditText(e.target.value);
 
-  const saveEditHandler = (text) => {
-    editTodo(props.item.key, text);
+  const saveEditHandler = (text, priority, dueDate) => {
+    editTodo(props.item.key, text, priority, dueDate);
     setEditStatus(false);
   };
 
@@ -52,13 +56,17 @@ function TodoIteam(props) {
     });
   };
 
-  let editTodo = (key, newText) => {
+  let editTodo = (key, newText, newPriority, newDueDate) => {
     setButtonLoading(true);
     let parseQuery = new Parse.Query("Todos");
     parseQuery.equalTo("objectId", key);
     parseQuery.find().then((result) => {
       let Todo = result[0];
       Todo.set("todoText", newText);
+      Todo.set("priority", newPriority);
+      if (newDueDate != "Not Set") {
+        Todo.set("dueDate", newDueDate.toDate());
+      }
       Todo.save().then((Todo) => {
         todoContext.dispatch({
           type: "edit_todo",
@@ -74,7 +82,17 @@ function TodoIteam(props) {
       {!editstatus ? (
         <Row justify="space-around" align="middle" className="task-box">
           <Col xs={24} sm={24} md={14} lg={16} xl={12}>
-            <p className="task-text">{props.item.text}</p>
+            <Row justify="space-around" align="middle">
+              <Col xs={24} sm={24} md={14} lg={16} xl={8}>
+                <p className="task-text">{props.item.text}</p>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={16} xl={8}>
+                <p className="task-text">{props.item.priority}</p>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={16} xl={8}>
+                <p className="task-text">{props.item.dueDate}</p>
+              </Col>
+            </Row>
           </Col>
 
           <Space align="center">
@@ -135,24 +153,60 @@ function TodoIteam(props) {
           </Space>
         </Row>
       ) : (
-        <Row justify="space-around" align="middle" className="task-box">
-          <Col xs={24} sm={24} md={14} lg={16} xl={12}>
-            <Input onChange={inputHandler} value={editText} />
-          </Col>
-
-          <Space align="center">
-            <Col xs={4} sm={4} md={4} lg={6} xl={6}>
-              <Button
-                shape="round"
-                className="edit-btn"
-                loading={buttonLoading}
-                onClick={() => saveEditHandler(editText)}
-              >
-                save
-              </Button>
-            </Col>
-          </Space>
-        </Row>
+        <Space align="center">
+          <Form name="add_todo" layout="inline">
+            <Row align="middle" justify="space-around" gutter={[10, 50]}>
+              <Col xs={24} sm={24} md={14} lg={8} xl={8}>
+                <Form.Item
+                  name="title"
+                  label="Title"
+                  defaultValue={editText}
+                  onChange={inputHandler}
+                >
+                  <Input value={editText} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={4} xl={4}>
+                <Form.Item name="priority" label="priority">
+                  <Select
+                    placeholder="priority"
+                    defaultValue={editpriority}
+                    onSelect={(value) => setEditpriority(value)}
+                  >
+                    <Option value="1">important</Option>
+                    <Option value="2">neutral</Option>
+                    <Option value="3">unimportant</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={7} xl={7} offset={1}>
+                <Form.Item label="Due Date" defaultValue={editdueDate}>
+                  <DatePicker
+                    style={{ width: "100%" }}
+                    onChange={(value) => setEditDueDate(value)}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={3} xl={3}>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    shape="round"
+                    className="edit-btn"
+                    onClick={() =>
+                      saveEditHandler(editText, editpriority, editdueDate)
+                    }
+                    loading={buttonLoading}
+                    block
+                  >
+                    Save
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Space>
       )}
     </>
   );

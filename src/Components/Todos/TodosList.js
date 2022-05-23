@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Tabs, Typography, Spin } from "antd";
 import TodoIteam from "./TodoItem";
+import TodoSort from "./TodoSort";
 import Parse from "parse/dist/parse.min.js";
 import TodoContext from "../../Contexts/TodoContext";
 const { Text } = Typography;
@@ -9,11 +10,20 @@ const { TabPane } = Tabs;
 function TodosList() {
   const [loading, setLoading] = useState(true);
   const todoContext = useContext(TodoContext);
+  const [doneList, setDoneList] = useState([]);
+  const [undoneList, setUnDoneList] = useState([]);
 
   useEffect(() => {
     initTodos();
+    let doneTodoList = todoContext.todos.filter((item) => item.done === true);
+    let unDoneTodoList = todoContext.todos.filter(
+      (item) => item.done === false
+    );
+    setDoneList(doneTodoList);
+    setUnDoneList(unDoneTodoList);
+
     setLoading(false);
-  }, []);
+  }, [todoContext.todos]);
 
   // prepare todo list
   const initTodos = () => {
@@ -23,11 +33,21 @@ function TodosList() {
     parseQuery.find().then((todos) => {
       let fetchTodoList = [];
       todos.forEach((todo) => {
-        fetchTodoList.push({
+        let todoDate = todo.get("dueDate");
+        let todoDueDate;
+        if (todoDate) {
+          todoDueDate = todoDate.toLocaleDateString();
+        } else {
+          todoDueDate = "Not Set";
+        }
+        let todoIteam = {
           key: todo.id,
           done: todo.get("done"),
           text: todo.get("todoText"),
-        });
+          priority: todo.get("priority"),
+          dueDate: todoDueDate,
+        };
+        fetchTodoList.push(todoIteam);
       });
       todoContext.dispatch({
         type: "init_todo",
@@ -36,19 +56,17 @@ function TodosList() {
     });
   };
 
-  let doneTodoList = todoContext.todos.filter((item) => item.done === true);
-  let unDoneTodoList = todoContext.todos.filter((item) => item.done === false);
-
   return (
     <>
       <Tabs type="card" defaultActiveKey="1" centered>
-        <TabPane tab={unDoneTodoList.length + " Todos "} key="1">
+        <TabPane tab={undoneList.length + " Todos "} key="1">
           {!loading ? (
             <>
-              {unDoneTodoList.length === 0 ? (
+              <TodoSort />
+              {undoneList.length === 0 ? (
                 <Text>There is no todo </Text>
               ) : (
-                unDoneTodoList.map((item) => (
+                undoneList.map((item) => (
                   <TodoIteam key={item.key} item={item} />
                 ))
               )}
@@ -57,15 +75,14 @@ function TodosList() {
             <Spin size="large" />
           )}
         </TabPane>
-        <TabPane tab={doneTodoList.length + " Done "} key="2">
+        <TabPane tab={doneList.length + " Done "} key="2">
           {!loading ? (
             <>
-              {doneTodoList.length === 0 ? (
+              <TodoSort />
+              {doneList.length === 0 ? (
                 <Text>There is no done task </Text>
               ) : (
-                doneTodoList.map((item) => (
-                  <TodoIteam key={item.key} item={item} />
-                ))
+                doneList.map((item) => <TodoIteam key={item.key} item={item} />)
               )}
             </>
           ) : (
