@@ -14,7 +14,13 @@ function TodosList() {
   const [undoneList, setUnDoneList] = useState([]);
 
   useEffect(() => {
+    setLoading(true);
     initTodos();
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
     let doneTodoList = todoContext.todos.filter((item) => item.done === true);
     let unDoneTodoList = todoContext.todos.filter(
       (item) => item.done === false

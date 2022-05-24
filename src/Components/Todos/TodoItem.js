@@ -8,17 +8,12 @@ const { Option } = Select;
 
 function TodoIteam(props) {
   const [editstatus, setEditStatus] = useState(false);
-  const [editText, setEditText] = useState(props.item.text);
-  const [editpriority, setEditpriority] = useState(props.item.priority);
-  const [editdueDate, setEditDueDate] = useState(props.item.dueDate);
   const [buttonLoading, setButtonLoading] = useState(false);
 
   const todoContext = useContext(TodoContext);
 
-  let inputHandler = (e) => setEditText(e.target.value);
-
-  const saveEditHandler = (text, priority, dueDate) => {
-    editTodo(props.item.key, text, priority, dueDate);
+  const saveEditHandler = (values) => {
+    editTodo(props.item.key, values.text, values.priority, values.dueDate);
     setEditStatus(false);
   };
 
@@ -58,19 +53,26 @@ function TodoIteam(props) {
 
   let editTodo = (key, newText, newPriority, newDueDate) => {
     setButtonLoading(true);
+    let todoDue = "Not Set";
     let parseQuery = new Parse.Query("Todos");
     parseQuery.equalTo("objectId", key);
     parseQuery.find().then((result) => {
       let Todo = result[0];
       Todo.set("todoText", newText);
       Todo.set("priority", newPriority);
-      if (newDueDate != "Not Set") {
+      if (newDueDate) {
         Todo.set("dueDate", newDueDate.toDate());
+        todoDue = newDueDate.toDate().toLocaleDateString();
       }
       Todo.save().then((Todo) => {
         todoContext.dispatch({
           type: "edit_todo",
-          payload: { key: Todo.id, newText: newText },
+          payload: {
+            key: Todo.id,
+            newText: newText,
+            newPriority: newPriority,
+            newDueDate: todoDue,
+          },
         });
         setButtonLoading(false);
       });
@@ -154,24 +156,22 @@ function TodoIteam(props) {
         </Row>
       ) : (
         <Space align="center">
-          <Form name="add_todo" layout="inline">
+          <Form name="add_todo" layout="inline" onFinish={saveEditHandler}>
             <Row align="middle" justify="space-around" gutter={[10, 50]}>
-              <Col xs={24} sm={24} md={14} lg={8} xl={8}>
+              <Col xs={24} sm={24} md={14} lg={8} xl={7}>
                 <Form.Item
-                  name="title"
+                  name="text"
                   label="Title"
-                  defaultValue={editText}
-                  onChange={inputHandler}
+                  initialValue={props.item.text}
                 >
-                  <Input value={editText} />
+                  <Input />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={24} md={14} lg={4} xl={4}>
                 <Form.Item name="priority" label="priority">
                   <Select
                     placeholder="priority"
-                    defaultValue={editpriority}
-                    onSelect={(value) => setEditpriority(value)}
+                    defaultValue={props.item.priority}
                   >
                     <Option value="1">important</Option>
                     <Option value="2">neutral</Option>
@@ -179,12 +179,13 @@ function TodoIteam(props) {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col xs={24} sm={24} md={14} lg={7} xl={7} offset={1}>
-                <Form.Item label="Due Date" defaultValue={editdueDate}>
-                  <DatePicker
-                    style={{ width: "100%" }}
-                    onChange={(value) => setEditDueDate(value)}
-                  />
+              <Col xs={24} sm={24} md={14} lg={7} xl={6} offset={1}>
+                <Form.Item
+                  name="dueDate"
+                  label="Due Date"
+                  defaultValue={props.item.text.dueDate}
+                >
+                  <DatePicker style={{ width: "100%" }} />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={24} md={14} lg={3} xl={3}>
@@ -194,13 +195,26 @@ function TodoIteam(props) {
                     htmlType="submit"
                     shape="round"
                     className="edit-btn"
-                    onClick={() =>
-                      saveEditHandler(editText, editpriority, editdueDate)
-                    }
                     loading={buttonLoading}
                     block
                   >
                     Save
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col xs={24} sm={24} md={14} lg={3} xl={3}>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    shape="round"
+                    loading={buttonLoading}
+                    block
+                    danger
+                    className="delete-btn"
+                    onClick={() => setEditStatus(false)}
+                  >
+                    Cansel
                   </Button>
                 </Form.Item>
               </Col>

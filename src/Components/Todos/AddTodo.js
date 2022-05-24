@@ -17,45 +17,41 @@ const { Text, Title } = Typography;
 const { Option } = Select;
 
 function AddTodo() {
+  const [form] = Form.useForm();
   const todoContext = useContext(TodoContext);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [text, setText] = useState("");
-  const [priority, setpriority] = useState("2");
-  const [dueDate, setDueDate] = useState(null);
 
-  const addTodo = () => {
-    if (text) {
-      setButtonLoading(true);
-      let todoDue = "Not Set";
-      let Todo = new Parse.Object("Todos");
-      const currentUser = Parse.User.current();
-      Todo.set("todoText", text);
-      Todo.set("done", false);
-      Todo.set("priority", priority);
-      if (dueDate) {
-        Todo.set("dueDate", dueDate.toDate());
-        todoDue = dueDate.toDate().toLocaleDateString();
-      }
-      Todo.set("ownerUser", currentUser);
-      Todo.save().then((Todo) => {
-        let newTodo = {
-          key: Todo.id,
-          done: false,
-          text,
-          priority: priority,
-          dueDate: todoDue,
-        };
+  const addTodo = (values) => {
+    console.log(values);
 
-        todoContext.dispatch({
-          type: "add_todo",
-          payload: { newTodo: newTodo },
-        });
-        setText("");
-        setButtonLoading(false);
-        setDueDate(null);
-        setpriority("2");
-      });
+    setButtonLoading(true);
+    let todoDue = "Not Set";
+    let Todo = new Parse.Object("Todos");
+    const currentUser = Parse.User.current();
+    Todo.set("todoText", values.text);
+    Todo.set("done", false);
+    Todo.set("priority", values.priority);
+    if (values.dueDate) {
+      Todo.set("dueDate", values.dueDate.toDate());
+      todoDue = values.dueDate.toDate().toLocaleDateString();
     }
+    Todo.set("ownerUser", currentUser);
+    Todo.save().then((Todo) => {
+      let newTodo = {
+        key: Todo.id,
+        done: false,
+        text: values.text,
+        priority: values.priority,
+        dueDate: todoDue,
+      };
+
+      todoContext.dispatch({
+        type: "add_todo",
+        payload: { newTodo: newTodo },
+      });
+      form.resetFields();
+      setButtonLoading(false);
+    });
   };
 
   return (
@@ -65,24 +61,22 @@ function AddTodo() {
       <Text>To get started, add some items to your list:</Text>
 
       <Space direction="horizontal">
-        <Form name="add_todo" layout="inline">
+        <Form form={form} name="add_todo" layout="inline" onFinish={addTodo}>
           <Row align="middle" justify="space-around" gutter={[10, 50]}>
             <Col xs={24} sm={24} md={14} lg={8} xl={8}>
               <Form.Item
-                name="title"
+                name="text"
                 label="Title"
-                onChange={(event) => setText(event.target.value)}
+                rules={[
+                  { required: true, message: "Please input your todo title!" },
+                ]}
               >
-                <Input placeholder="i want to do ..." value={text} />
+                <Input placeholder="i want to do ..." />
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={14} lg={4} xl={4}>
-              <Form.Item name="priority" label="priority">
-                <Select
-                  placeholder="priority"
-                  defaultValue="neutral"
-                  onSelect={(value) => setpriority(value)}
-                >
+              <Form.Item initialValue="2" name="priority" label="priority">
+                <Select placeholder="priority">
                   <Option value="1">important</Option>
                   <Option value="2">neutral</Option>
                   <Option value="3">unimportant</Option>
@@ -90,11 +84,8 @@ function AddTodo() {
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={14} lg={7} xl={7} offset={1}>
-              <Form.Item label="Due Date">
-                <DatePicker
-                  style={{ width: "100%" }}
-                  onChange={(value) => setDueDate(value)}
-                />
+              <Form.Item name="dueDate" label="Due Date">
+                <DatePicker style={{ width: "100%" }} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={14} lg={3} xl={3}>
@@ -102,7 +93,6 @@ function AddTodo() {
                 <Button
                   type="primary"
                   htmlType="submit"
-                  onClick={addTodo}
                   loading={buttonLoading}
                   block
                 >

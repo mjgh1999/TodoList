@@ -35,13 +35,13 @@ const PrivateRoute = ({ children, isAuthenticated }) => {
 
 function App() {
   const currentUserpars = Parse.User.current();
-  const [auth, Setauth] = useState(false);
+  const [auth, setAuth] = useState(Parse.User.current());
   const [correntUser, setCorrentUser] = useState(currentUserpars);
   const [state, dispatch] = useReducer(todoReducer, { todos: [] });
 
   useEffect(() => {
     if (correntUser) {
-      Setauth(true);
+      setAuth(true);
     }
   }, [correntUser]);
 
@@ -50,6 +50,7 @@ function App() {
       <AuthContext.Provider
         value={{
           authenticated: auth,
+          setAuth: setAuth,
           currentUser: correntUser,
         }}
       >
@@ -68,7 +69,7 @@ function App() {
                 path="/profile"
                 element={
                   <PrivateRoute
-                    isAuthenticated={correntUser}
+                    isAuthenticated={auth}
                     children={<UserEditProfile />}
                   />
                 }
@@ -77,7 +78,7 @@ function App() {
                 path="/todos"
                 element={
                   <PrivateRoute
-                    isAuthenticated={correntUser}
+                    isAuthenticated={auth}
                     children={<TodoMain />}
                   />
                 }
@@ -86,7 +87,7 @@ function App() {
                 path="/"
                 element={
                   <PrivateRoute
-                    isAuthenticated={correntUser}
+                    isAuthenticated={auth}
                     children={<TodoMain />}
                   />
                 }

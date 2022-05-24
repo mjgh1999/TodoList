@@ -49,14 +49,18 @@ let deleteTodo = (prevState, action) => {
 };
 
 let toggleTodo = (prevState, action) => {
+  console.log("key : " + action.payload.key);
   let key = action.payload.key;
   let targetTodo = prevState.todos.find((item) => item.key === key);
   let targetDownStatus = targetTodo.done;
   let toggledTodo = {
-    key: targetTodo.id,
+    key: targetTodo.key,
     done: !targetDownStatus,
     text: targetTodo.text,
+    priority: targetTodo.priority,
+    dueDate: targetTodo.dueDate,
   };
+  console.log({ toggledTodo });
   let newTodoList = prevState.todos.filter((item) => item.key != key);
   return {
     todos: [...newTodoList, toggledTodo],
@@ -65,11 +69,20 @@ let toggleTodo = (prevState, action) => {
 
 let editTodo = (prevState, action) => {
   let newText = action.payload.newText;
+  let newPriority = action.payload.newPriority;
+  let newDueDate = action.payload.newDueDate;
   let key = action.payload.key;
   let targetTodo = prevState.todos.find((item) => item.key === key);
-  targetTodo.text = newText;
+  let editedTodo = {
+    key: targetTodo.key,
+    done: targetTodo.done,
+    text: newText,
+    priority: newPriority,
+    dueDate: newDueDate,
+  };
+
   let newTodoList = prevState.todos.filter((item) => item.key != key);
-  let subTodo = [...newTodoList, targetTodo];
+  let subTodo = [...newTodoList, editedTodo];
   return {
     todos: subTodo,
   };

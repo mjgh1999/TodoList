@@ -53,8 +53,7 @@ function UserRegistration() {
       );
       // authenticated
       const currentUser = await Parse.User.current();
-      authcontext.currentUser = currentUser;
-      authcontext.authenticated = true;
+      authcontext.setAuth(true);
       setSignupDown(true);
       return true;
     } catch (error) {
