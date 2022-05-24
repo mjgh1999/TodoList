@@ -160,10 +160,9 @@ function TodoIteam(props) {
                 <Form.Item
                   name="title"
                   label="Title"
-                  defaultValue={editText}
                   onChange={inputHandler}
                 >
-                  <Input value={editText} />
+                  <Input defaultValue={editText} />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={24} md={14} lg={4} xl={4}>

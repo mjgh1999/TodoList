@@ -15,6 +15,9 @@ function TodosList() {
 
   useEffect(() => {
     initTodos();
+  },[]);
+  
+  useEffect(() => {
     let doneTodoList = todoContext.todos.filter((item) => item.done === true);
     let unDoneTodoList = todoContext.todos.filter(
       (item) => item.done === false
@@ -24,6 +27,7 @@ function TodosList() {
 
     setLoading(false);
   }, [todoContext.todos]);
+
 
   // prepare todo list
   const initTodos = () => {

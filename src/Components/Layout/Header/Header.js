@@ -13,7 +13,7 @@ function PageHeader() {
   const doUserLogOut = async function () {
     try {
       await Parse.User.logOut();
-      authContext.authenticated = false;
+      authContext.setAuth(false);
       return true;
     } catch (error) {
       alert(`Error! ${error.message}`);

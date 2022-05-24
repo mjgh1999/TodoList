@@ -11,13 +11,7 @@ function UserLogin() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const getCurrentUser = async function () {
-    const currentUser = await Parse.User.current();
-    setCurrentUser(currentUser);
-    return currentUser;
-  };
+  const [currentUser, setCurrentUser] = useState(Parse.User.current());
 
   const doUserLogIn = async function () {
     const usernameValue = username;
@@ -27,10 +21,9 @@ function UserLogin() {
       setUsername("");
       setPassword("");
       // Update state variable holding current user
-      getCurrentUser();
+      setCurrentUser(Parse.User.current());
       // authenticated
-      authcontext.authenticated = true;
-      authcontext.currentUser = currentUser;
+      authcontext.setAuth(true);
       return true;
     } catch (error) {
       // Error can be caused by wrong parameters or lack of Internet connection

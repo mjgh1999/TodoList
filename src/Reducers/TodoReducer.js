@@ -49,14 +49,19 @@ let deleteTodo = (prevState, action) => {
 };
 
 let toggleTodo = (prevState, action) => {
+  console.log('key : '+action.payload.key);
   let key = action.payload.key;
   let targetTodo = prevState.todos.find((item) => item.key === key);
+  console.log({targetTodo});
   let targetDownStatus = targetTodo.done;
   let toggledTodo = {
-    key: targetTodo.id,
+    key: targetTodo.key,
     done: !targetDownStatus,
     text: targetTodo.text,
+    priority: targetTodo.priority,
+    dueDate: targetTodo.dueDate,
   };
+  console.log({toggledTodo});
   let newTodoList = prevState.todos.filter((item) => item.key != key);
   return {
     todos: [...newTodoList, toggledTodo],
