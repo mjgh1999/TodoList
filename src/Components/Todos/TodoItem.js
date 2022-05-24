@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Row, Col, Button, Space, Input, Form, Select, DatePicker } from "antd";
+import moment from "moment";
 import Parse from "parse/dist/parse.min.js";
 import TodoContext from "../../Contexts/TodoContext";
 import "../Todos/Styles/TodoItemStyles.css";
@@ -13,6 +14,7 @@ function TodoIteam(props) {
   const todoContext = useContext(TodoContext);
 
   const saveEditHandler = (values) => {
+    console.log(values);
     editTodo(props.item.key, values.text, values.priority, values.dueDate);
     setEditStatus(false);
   };
@@ -60,7 +62,7 @@ function TodoIteam(props) {
       let Todo = result[0];
       Todo.set("todoText", newText);
       Todo.set("priority", newPriority);
-      if (newDueDate) {
+      if (newDueDate != "Not Set") {
         Todo.set("dueDate", newDueDate.toDate());
         todoDue = newDueDate.toDate().toLocaleDateString();
       }
@@ -168,11 +170,12 @@ function TodoIteam(props) {
                 </Form.Item>
               </Col>
               <Col xs={24} sm={24} md={14} lg={4} xl={4}>
-                <Form.Item name="priority" label="priority">
-                  <Select
-                    placeholder="priority"
-                    defaultValue={props.item.priority}
-                  >
+                <Form.Item
+                  name="priority"
+                  label="priority"
+                  initialValue={props.item.priority}
+                >
+                  <Select>
                     <Option value="1">important</Option>
                     <Option value="2">neutral</Option>
                     <Option value="3">unimportant</Option>
@@ -183,9 +186,12 @@ function TodoIteam(props) {
                 <Form.Item
                   name="dueDate"
                   label="Due Date"
-                  defaultValue={props.item.text.dueDate}
+                  initialValue={moment(props.item.dueDate)}
                 >
-                  <DatePicker style={{ width: "100%" }} />
+                  <DatePicker
+                    //defaultValue={props.item.dueDate.toDate().moment()}
+                    style={{ width: "100%" }}
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} sm={24} md={14} lg={3} xl={3}>
