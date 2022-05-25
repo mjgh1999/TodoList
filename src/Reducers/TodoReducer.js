@@ -5,6 +5,12 @@ function todoReducer(prevState, action) {
     case "init_todo":
       return initTodo(prevState, action);
 
+    case "init_Donetodo":
+      return initDoneTodo(prevState, action);
+
+    case "init_UnDonetodo":
+      return initUnDoneTodo(prevState, action);
+
     case "add_todo":
       return addTodo(prevState, action);
 
@@ -27,7 +33,24 @@ export default todoReducer;
 const initTodo = (prevState, action) => {
   let todos = action.payload.todos;
   return {
+    ...prevState,
     todos: todos,
+  };
+};
+
+const initDoneTodo = (prevState, action) => {
+  let todos = action.payload.doneTodos;
+  return {
+    ...prevState,
+    doneTodos: [...prevState.doneTodos, todos],
+  };
+};
+
+const initUnDoneTodo = (prevState, action) => {
+  let todos = action.payload.undoneTodos;
+  return {
+    ...prevState,
+    undoneTodos: [...prevState.undoneTodos, ...todos],
   };
 };
 
@@ -36,22 +59,40 @@ const addTodo = (prevState, action) => {
   // let subList = prevState.todos
   // subList.push(newTodo);
   return {
-    todos: [...prevState.todos, newTodo],
+    ...prevState,
+    undoneTodos: [...prevState.undoneTodos, newTodo],
   };
 };
 
 let deleteTodo = (prevState, action) => {
   let key = action.payload.key;
-  let subTodo = prevState.todos.filter((item) => item.key != key);
-  return {
-    todos: subTodo,
-  };
+  let done = action.payload.done;
+  let subTodo;
+  if (done) {
+    subTodo = prevState.doneTodos.filter((item) => item.key != key);
+    return {
+      ...prevState,
+      doneTodos: subTodo,
+    };
+  } else {
+    subTodo = prevState.undoneTodos.filter((item) => item.key != key);
+    return {
+      ...prevState,
+      undoneTodos: subTodo,
+    };
+  }
 };
 
 let toggleTodo = (prevState, action) => {
-  console.log("key : " + action.payload.key);
   let key = action.payload.key;
-  let targetTodo = prevState.todos.find((item) => item.key === key);
+  let done = action.payload.done;
+  let targetTodo;
+  let newTodoList;
+  if (done) {
+    targetTodo = prevState.doneTodos.find((item) => item.key === key);
+  } else {
+    targetTodo = prevState.undoneTodos.find((item) => item.key === key);
+  }
   let targetDownStatus = targetTodo.done;
   let toggledTodo = {
     key: targetTodo.key,
@@ -60,19 +101,34 @@ let toggleTodo = (prevState, action) => {
     priority: targetTodo.priority,
     dueDate: targetTodo.dueDate,
   };
-  console.log({ toggledTodo });
-  let newTodoList = prevState.todos.filter((item) => item.key != key);
-  return {
-    todos: [...newTodoList, toggledTodo],
-  };
+  if (done) {
+    newTodoList = prevState.doneTodos.filter((item) => item.key != key);
+    return {
+      ...prevState,
+      doneTodos: [...newTodoList, toggledTodo],
+    };
+  } else {
+    newTodoList = prevState.undoneTodos.filter((item) => item.key != key);
+    return {
+      ...prevState,
+      undoneTodos: [...newTodoList, toggledTodo],
+    };
+  }
 };
 
 let editTodo = (prevState, action) => {
+  let done = action.payload.done;
   let newText = action.payload.newText;
   let newPriority = action.payload.newPriority;
   let newDueDate = action.payload.newDueDate;
+  let targetTodo;
+  let newTodoList;
   let key = action.payload.key;
-  let targetTodo = prevState.todos.find((item) => item.key === key);
+  if (done) {
+    targetTodo = prevState.doneTodos.find((item) => item.key === key);
+  } else {
+    targetTodo = prevState.undoneTodos.find((item) => item.key === key);
+  }
   let editedTodo = {
     key: targetTodo.key,
     done: targetTodo.done,
@@ -80,10 +136,20 @@ let editTodo = (prevState, action) => {
     priority: newPriority,
     dueDate: newDueDate,
   };
-
-  let newTodoList = prevState.todos.filter((item) => item.key != key);
-  let subTodo = [...newTodoList, editedTodo];
-  return {
-    todos: subTodo,
-  };
+  let subTodo;
+  if (done) {
+    newTodoList = prevState.doneTodos.filter((item) => item.key != key);
+    subTodo = [...newTodoList, editedTodo];
+    return {
+      ...prevState,
+      doneTodos: subTodo,
+    };
+  } else {
+    newTodoList = prevState.undoneTodos.filter((item) => item.key != key);
+    subTodo = [...newTodoList, editedTodo];
+    return {
+      ...prevState,
+      undoneTodos: subTodo,
+    };
+  }
 };

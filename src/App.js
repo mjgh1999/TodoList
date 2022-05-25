@@ -11,6 +11,7 @@ import UserRegistration from "./Components/User/Authentication/SignUpForm/SignUp
 import PageHeader from "./Components/Layout/Header/Header.js";
 import TodoMain from "./Components/Todos/TodoMain.js";
 import UserEditProfile from "./Components/User/Profile/Profile.js";
+import TodoTest from "./Components/Todos/TodoTable.js";
 // Contexts
 import AuthContext from "./Contexts/Auth";
 import TodoContext from "./Contexts/TodoContext";
@@ -37,7 +38,11 @@ function App() {
   const currentUserpars = Parse.User.current();
   const [auth, setAuth] = useState(Parse.User.current());
   const [correntUser, setCorrentUser] = useState(currentUserpars);
-  const [state, dispatch] = useReducer(todoReducer, { todos: [] });
+  const [state, dispatch] = useReducer(todoReducer, {
+    todos: [],
+    undoneTodos: [],
+    doneTodos: [],
+  });
 
   useEffect(() => {
     if (correntUser) {
@@ -57,6 +62,8 @@ function App() {
         <TodoContext.Provider
           value={{
             todos: state.todos,
+            doneTodos: state.doneTodos,
+            undoneTodos: state.undoneTodos,
             dispatch: dispatch,
           }}
         >
